@@ -1,0 +1,58 @@
+# ------------------------------
+# ❗ MQL4 開発用 .gitignore
+# EdgeProTrader プロジェクト用最適化版
+# ------------------------------
+
+# --- 実行ファイル／バイナリ ---
+*.ex4
+*.ex5
+*.mqcache.dat
+
+# --- 自動生成フォルダ／キャッシュ類 ---
+Logs/
+Presets/
+Files/
+Scripts/
+Projects/
+Shared Projects/
+
+# --- 不要なIDE系テンポラリ ---
+*.mqh~
+*.mq4~
+*.bak
+*.tmp
+*.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# --- OS別 ---
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+$RECYCLE.BIN/
+*.lnk
+
+# --- Git自体の一時情報 ---
+.git/
+.gitignore~
+
+# --- VSCode等エディタ設定（使っている場合） ---
+.vscode/
+.idea/
+*.code-workspace
+
+# --- 除外フォルダのうち、一部だけGitに含めたい場合 ---
+# たとえば Include/EdgeProLib/ のみを追跡し、それ以外を除外したい場合：
+
+Include/*
+!Include/EdgeProLib/
+!Include/EdgeProLib/**
+
+# Experts 以下も基本除外、必要なものだけ追跡
+Experts/*
+!Experts/Testing/
+!Experts/Testing/*.mq4
