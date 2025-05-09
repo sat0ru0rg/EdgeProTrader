@@ -56,3 +56,7 @@ Include/*
 Experts/*
 !Experts/Testing/
 !Experts/Testing/*.mq4
+
+# ドキュメント関連除外
+/docs/*.zip
+/docs/templates/
