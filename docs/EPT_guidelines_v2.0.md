@@ -1,0 +1,121 @@
+# EdgeProTrader ガイドライン v2.0（統合版ドラフト）
+
+---
+
+## 第1章. ガイドの目的と適用範囲
+
+このドキュメントは、EdgeProTrader プロジェクトにおける以下2領域のルールを統合した運用ガイドラインです：
+
+- **コーディングガイドライン（Coding Guidelines）**
+- **プロジェクトファイル管理ガイドライン（PFM: Project File Management）**
+
+本ガイドの目的は以下のとおりです：
+
+- 各担当者が共通認識をもって作業を行うための基準を定義する
+- チーム内での設計・保守・レビューの整合性を高める
+- 将来的な移植（MQL5等）や拡張性のある運用を可能にする
+
+### 1.1 適用対象
+
+- MQL4で開発されるすべての `Experts/` `Include/` 以下のソース群
+- `Common/CommonDefs.mqh` 等の共通モジュール
+- Gitで管理される設計・運用ドキュメント群（`.md` ファイル）
+
+### 1.2 管理方針
+
+- バージョンは章構造や内容の大幅更新時に明示的に上げる
+- 軽微な記述修正は `EPT_ChangeLog.md` に追記することで対応
+- GPT支援による出力構造は `EPT_prompt_v5.0.md` に準拠する
+
+---
+
+## 第2章. ガイド構成と分類
+
+本ガイドは、以下2系統のガイドを統合しています：
+
+| 分類 | 内容 | 担当対象 | 補足 |
+|------|------|-----------|------|
+| コーディングガイドライン | DebugPrint, 命名規則, 関数設計方針 など | 主にMQLソース担当 | `EPT_codingGuide_v1.3` 由来 |
+| プロジェクトファイル管理（PFM） | ディレクトリ構成, ファイル命名, バージョン付与 など | 設計者・保守者共通 | `EPT_PFMGuideline_v1.3` 由来 |
+
+> 🔖 どちらも `EPT_prompt_v5.0.md` および `EPT_operationalGuide_v2.0.md` と整合性を保って運用されます。
+
+---
+
+## 第3章. 実装ルール（Coding Guidelines）
+
+### 3.1 デバッグ出力規約（DebugPrint 関数の統一）
+
+- デバッグフラグ `extern bool DebugMode = true;` によって出力制御
+- 専用関数 `DebugPrint()` を `Common/CommonDefs.mqh` に実装し、全EAで共通使用
+- 関数の冒頭と終了に必ず `DebugPrint()` を入れる
+- 条件分岐・重要変数更新時も適宜 `DebugPrint()` を追加
+- 関数名は手動記載（MQL標準マクロは存在しないため）
+
+#### ✅ 実装例（`Common/CommonDefs.mqh`）
+
+```cpp
+#ifndef __COMMON_DEBUG__
+#define __COMMON_DEBUG__
+
+extern bool DebugMode = true;
+
+void DebugPrint(string message)
+{
+    if (DebugMode)
+        Print("[DEBUG] ", message);
+}
+
+#endif
+```
+
+#### ✅ 使用例
+
+```cpp
+#include "Common/CommonDefs.mqh"
+
+void calculateRiskLot(double balance, int riskPercentage)
+{
+    DebugPrint("calculateRiskLot START");
+
+    double riskAmount = balance * (riskPercentage / 100.0);
+    DebugPrint("Risk Amount calculated: " + DoubleToString(riskAmount, 2));
+
+    DebugPrint("calculateRiskLot END");
+}
+```
+
+### 3.2 コード例記載方針
+
+- ガイドライン内でのコード提示は、**良い例／悪い例** をセットで記述すること
+- 必要に応じて「設計者コメント」「注意点」などの補足も明記する
+- 表形式・構文ブロックなどを使い、視認性を高める
+
+### 3.3 クラスファイルの命名規則（正式ルール）
+
+- 各 `.mqh` ファイルには、**1クラスのみを定義することを原則とする**。
+- ファイル名は、**定義するクラスと同じ名称（`C〇〇.mqh`）とする**。
+- 例：
+  - クラス名：`CEntryExecutor` → ファイル名：`CEntryExecutor.mqh`
+  - クラス名：`CBEExecutor`    → ファイル名：`CBEExecutor.mqh`
+
+> この命名整合性により、設計のトレース性とIDEでの検索性が大幅に向上する。
+
+---
+
+## 第4章. 補足・備考
+
+- 本ガイドラインは `EPT_guidelines_v1.0.md` をベースに再編されたものであり、内容はテンプレ構造に従って再構成されている。
+- `EPT_guidelines_Template.md` に基づき、今後も必要に応じて章の増減・再編が可能である。
+- GPTによる補助出力やルール自動生成は `EPT_prompt_v5.0.md` を参照のこと。
+
+---
+
+## 第5章. 今後の拡張方針（任意）
+
+- コード整形ルールやリントツールの導入（外部スクリプトによるフォーマット統一）
+- PFM領域のGit自動構成ファイル生成（例：`.gitattributes`, `.editorconfig`）
+- GPTとの対話ログを活用したプロンプト生成・レビュー履歴の自動化
+- MQL5向けルールセットの別ファイル分離・共通ルール抽出
+
+---
