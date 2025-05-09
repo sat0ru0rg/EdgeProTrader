@@ -6,7 +6,7 @@
 # --- 実行ファイル／バイナリ ---
 *.ex4
 *.ex5
-*.mqcache.dat
++mqlcache.dat
 
 # --- 自動生成フォルダ／キャッシュ類 ---
 Logs/
