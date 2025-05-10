@@ -126,3 +126,4 @@
 | 78 | 2025/05/10 | EPT_operationalGuide_v2.0.md | v2.0 | 章追加 | 第8章「ドキュメントGit管理ルール」を新設。`.md`ファイルの管理対象、コミット命名、タグ運用、.gitignore基準を明文化 | 【運用ルール】ドキュメントのGit管理導入 |
 | 79 | 2025/05/10 | EPT_Class_v2.0.md | v2.0 | 実装追加 | 共通パラメータ管理用の抽象基底クラス `COrderExecutorBase` を新規実装（symbol/lot/SL/TP等）。すべてのExecutor系クラスから継承可能 | 【実装対応】COrderExecutorBaseの実装 |
 | 80 | 2025/05/10 | EPT_prompt_v5.0.md | v5.0 | 表記修正 | タスク登録テンプレートに `| XX |` 列を追加し、ChangeLog運用ルール（第5章）と表構造を統一 | 【表記修正】タスク登録テンプレのXX列追加 |
+| 81 | 2025/05/11 | CExecutorInterfaces.mqh | v1.0 | 新規追加 | Executor戦略クラス用のインターフェース群（IMarketOrderExecutor, ISLModifier等）を定義。今後の多重継承・interface_castによる柔軟な戦略構成に対応。 | 【実装対応】CExecutorInterfaces.mqhの定義 |
