@@ -129,3 +129,4 @@
 | 81 | 2025/05/11 | CExecutorInterfaces.mqh | v1.0 | 新規追加 | Executor戦略クラス用のインターフェース群（IMarketOrderExecutor, ISLModifier等）を定義。今後の多重継承・interface_castによる柔軟な戦略構成に対応。 | 【実装対応】CExecutorInterfaces.mqhの定義 |
 | 82 | 2025/05/12 | EPT_logRule_Draft_v1.2.md | v1.2 | 初版作成 | デバッグ出力のタグ分類・出力関数の使い分け・ヘルパー出力方針を定義したログ出力設計ルールを策定 | 【仕様整理】ログ出力設計ルールの暫定整備 |
 | 83 | 2025/05/12 | EPT_operationalGuide_v2.0.md | v2.0 | 章追加 | 第1章末尾に1.3節「ログ出力ルールとの関連」を新設。EPT_logRule_Draft_v1.2.mdの参照と準拠方針を明記 | 【仕様整理】ログ出力設計ルールの暫定整備 |
+| 84 | 2025/05/13 | CBEExecutor.mqh, Test_BEExecutor.mq4 | v1.0 | ログ設計統一 | `[DEBUG]`ログをすべて `DebugPrint()` に統一し、[ACTION]/[TEST] タグに基づく出力責任を明示。ログ粒度も BEGIN / END / RESULT に再構成 | 【実装対応】BE実行ロジックの安全性修正（建値以上SLの抑制） |
