@@ -1,62 +1,83 @@
-# ------------------------------
-# ❗ MQL4 開発用 .gitignore
-# EdgeProTrader プロジェクト用最適化版
-# ------------------------------
+# ---------------------------------------------
+# ✅ EdgeProTrader プロジェクト用 .gitignore
+# MQL4 + macOS + Parallels 対応最適化構成
+# ---------------------------------------------
 
-# --- 実行ファイル／バイナリ ---
+# ────────────────
+# 🧠 コンパイル生成物（MQL4実行ファイル）
+# ────────────────
 *.ex4
 *.ex5
 *.dat
+*.log
+*.tmp
+*.bak
+*.mq4~
+*.mqh~
+*.old
 
-# --- 自動生成フォルダ／キャッシュ類 ---
+# ────────────────
+# 🗃️ 自動生成フォルダ／キャッシュ
+# ────────────────
 Logs/
 Presets/
 Files/
 Scripts/
 Projects/
 Shared Projects/
+MQL4/Logs/
+MQL4/Files/
+MQL4/Presets/
+MQL4/Projects/
 
-# --- 不要なIDE系テンポラリ ---
-*.mqh~
-*.mq4~
-*.bak
-*.tmp
-*.DS_Store
+# ────────────────
+# 💻 macOS・Parallelsのゴミファイル
+# ────────────────
+.DS_Store
+.Spotlight-V100
+.Trashes
+.AppleDouble
+.LSOverride
+._*
+
+# ────────────────
+# 🪟 Windowsの不要ファイル
+# ────────────────
 Thumbs.db
 ehthumbs.db
 desktop.ini
-
-# --- OS別 ---
-# macOS
-.DS_Store
-.AppleDouble
-.LSOverride
-
-# Windows
 $RECYCLE.BIN/
 *.lnk
 
-# --- Git自体の一時情報 ---
-.git/
-.gitignore~
-
-# --- VSCode等エディタ設定（使っている場合） ---
+# ────────────────
+# 🧰 IDE／エディタ構成ファイル
+# ────────────────
 .vscode/
 .idea/
 *.code-workspace
 
-# --- 除外フォルダのうち、一部だけGitに含めたい場合 ---
-# たとえば Include/EdgeProLib/ のみを追跡し、それ以外を除外したい場合：
+# ────────────────
+# 🔧 Gitのメタ情報・テンポラリ
+# ────────────────
+.gitignore~
+README~.md
 
+# ────────────────
+# 🔍 除外 → 明示的に追跡許可するパターン
+# ────────────────
+
+# Include 全除外 → EdgeProLibのみ許可
 Include/*
 !Include/EdgeProLib/
 !Include/EdgeProLib/**
 
-# Experts 以下も基本除外、必要なものだけ追跡
+# Experts 全除外 → Testingのみ許可（*.mq4のみ）
 Experts/*
 !Experts/Testing/
 !Experts/Testing/*.mq4
 
-# ドキュメント関連除外
+# ────────────────
+# 📄 ドキュメント除外（テンプレ・バイナリ）
+# ────────────────
 /docs/*.zip
 /docs/templates/
