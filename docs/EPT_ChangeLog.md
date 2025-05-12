@@ -127,3 +127,5 @@
 | 79 | 2025/05/10 | EPT_Class_v2.0.md | v2.0 | 実装追加 | 共通パラメータ管理用の抽象基底クラス `COrderExecutorBase` を新規実装（symbol/lot/SL/TP等）。すべてのExecutor系クラスから継承可能 | 【実装対応】COrderExecutorBaseの実装 |
 | 80 | 2025/05/10 | EPT_prompt_v5.0.md | v5.0 | 表記修正 | タスク登録テンプレートに `| XX |` 列を追加し、ChangeLog運用ルール（第5章）と表構造を統一 | 【表記修正】タスク登録テンプレのXX列追加 |
 | 81 | 2025/05/11 | CExecutorInterfaces.mqh | v1.0 | 新規追加 | Executor戦略クラス用のインターフェース群（IMarketOrderExecutor, ISLModifier等）を定義。今後の多重継承・interface_castによる柔軟な戦略構成に対応。 | 【実装対応】CExecutorInterfaces.mqhの定義 |
+| 82 | 2025/05/12 | EPT_logRule_Draft_v1.2.md | v1.2 | 初版作成 | デバッグ出力のタグ分類・出力関数の使い分け・ヘルパー出力方針を定義したログ出力設計ルールを策定 | 【仕様整理】ログ出力設計ルールの暫定整備 |
+| 83 | 2025/05/12 | EPT_operationalGuide_v2.0.md | v2.0 | 章追加 | 第1章末尾に1.3節「ログ出力ルールとの関連」を新設。EPT_logRule_Draft_v1.2.mdの参照と準拠方針を明記 | 【仕様整理】ログ出力設計ルールの暫定整備 |
