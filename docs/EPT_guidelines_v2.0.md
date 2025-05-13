@@ -44,46 +44,34 @@
 
 ## 第3章. 実装ルール（Coding Guidelines）
 
-### 3.1 デバッグ出力規約（DebugPrint 関数の統一）
+### 3.1 デバッグ出力規約（LOGマクロの統一構造）
 
-- デバッグフラグ `extern bool DebugMode = true;` によって出力制御
-- 専用関数 `DebugPrint()` を `Common/CommonDefs.mqh` に実装し、全EAで共通使用
-- 関数の冒頭と終了に必ず `DebugPrint()` を入れる
-- 条件分岐・重要変数更新時も適宜 `DebugPrint()` を追加
-- 関数名は手動記載（MQL標準マクロは存在しないため）
+本プロジェクトでは、すべてのログ出力は `LOG_<カテゴリ>_<レベル>()` 形式のマクロによって行う。  
+旧 `DebugPrint()` は廃止対象とし、今後の開発では使用禁止とする。
 
-#### ✅ 実装例（`Common/CommonDefs.mqh`）
+#### ✅ マクロ構文
 
-```cpp
-#ifndef __COMMON_DEBUG__
-#define __COMMON_DEBUG__
-
-extern bool DebugMode = true;
-
-void DebugPrint(string message)
-{
-    if (DebugMode)
-        Print("[DEBUG] ", message);
-}
-
-#endif
+```mql4
+LOG_LOGIC_DEBUG("スプレッド条件チェック開始");
+LOG_ACTION_INFO("建値移動完了 Ticket=123456");
+LOG_VIEW_ERROR("TPライン描画失敗 → objName: TP_1");
 ```
 
-#### ✅ 使用例
+#### ✅ 使用ルール
 
-```cpp
-#include "Common/CommonDefs.mqh"
+- ログは「カテゴリ」と「レベル」の2軸で分類される
+  - カテゴリ：`VIEW`, `LOGIC`, `ACTION`, `TEST`
+  - レベル　：`DEBUG`, `INFO`, `ERROR`
+- マクロ定義は `EPT_EnvConfig.mqh` にて提供される（12種）
+- ログレベルの選択基準は `EPT_logRule_Draft_v1.3.md` 第4章を参照
+- クラス／関数単位で一貫したカテゴリを使用し、粒度の明確な出力を行う
 
-void calculateRiskLot(double balance, int riskPercentage)
-{
-    DebugPrint("calculateRiskLot START");
+#### ✅ 移行方針
 
-    double riskAmount = balance * (riskPercentage / 100.0);
-    DebugPrint("Risk Amount calculated: " + DoubleToString(riskAmount, 2));
+- 既存の `DebugPrint()` は段階的に `LOG_◯◯_◯◯()` に差し替える
+- マクロは `DebugMode` フラグにより全体出力を制御可能
 
-    DebugPrint("calculateRiskLot END");
-}
-```
+> 🔗 詳細な分類・判定基準・使用例は `EPT_logRule_Draft_v1.3.md` に準拠。
 
 ### 3.2 コード例記載方針
 
