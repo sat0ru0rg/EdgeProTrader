@@ -28,8 +28,8 @@ EdgeProTraderにおけるMQL実装は、「View / Logic / Trade」の**三層構
 | 層名    | 主な責務 | 含まれる代表クラス例 |
 |--------|----------|----------------------|
 | View   | ユーザー操作／チャートUI | `CEntryPanel`, `ChartRenderer` |
-| Logic  | 状態管理／判定処理 | `CPanelStateManager`, `CEntryValidator`, `CPositionModel`, `CRiskManager` |
-| Trade  | 発注・決済の実行処理 | `CEntryExecutor`, `CBEExecutor` |
+| Logic  | 状態管理／判定処理 | `CPanelStateManager`, `CEntryValidator`, `CPositionModel`, `CRiskManager`, `CBEPriceCalculator` |
+| Trade  | 発注・決済の実行処理 | `CEntryExecutor`, `CPendingEntryExecutor`, `CExitExecutor`, `CTrailSLExecutor` |
 
 > 各層は1クラス1責務を原則とし、OOP構造に基づく明確な分離を行う。
 
@@ -47,70 +47,68 @@ EdgeProTraderにおけるMQL実装は、「View / Logic / Trade」の**三層構
 
 ---
 
-## 第3章. クラス別設計指針と分岐対応
+## 第3章. モジュール構成設計（View / Logic / Trade）
 
-本章では、EdgeProTraderのMQL4/5両対応を前提としたクラス設計において、View/Logic/Trade層の各クラスに関する**差異・共通化方針**を整理する。
+### 3.1 Viewモジュール
 
-### 3.1 クラスごとの実装比較表
+#### CEntryPanel
+- **役割**：エントリーパネルUIの表示とボタン押下処理を行う
+- **構成**：MQL4/MQL5で異なるため、`CEntryPanel_MQL4` / `CEntryPanel_MQL5` に分離予定
+- **備考**：将来的に `CEntryPanelBase` による共通I/F化を想定
 
-| クラス名              | モジュール | 主な責務                             | MQL4実装           | MQL5実装            | 共通化評価 | 今後の指針 |
-|-----------------------|------------|--------------------------------------|---------------------|----------------------|-------------|------------|
-| `CEntryPanel`         | View       | パネルUI描画＋操作受信               | OBJ_LABEL系         | CDialog派生          | ❌ UI別実装 | 将来 `CEntryPanelBase` 導入予定 |
-| `ChartRenderer`       | View       | TP/SL/ラベル描画                     | ObjectCreate        | 同左（共通）         | ✅ 共通API  | 完全共通化済み               |
-| `CPanelStateManager`  | Logic      | UI状態の判定・遷移                   | 実装中              | 実装中               | ✅ ロジック共通 | `/Logic/` 配置で共通管理     |
-| `CEntryValidator`     | Logic      | スプレッド／時間帯など事前条件の判定 | 未実装              | 未実装               | ✅ ロジック共通 | `/Logic/` 配置で共通管理     |
-| `CPositionModel`      | Logic      | 保有ポジション抽象化                 | OrderSelect         | PositionGet          | 🟡 API差異  | API吸収構造で共通化可       |
-| `CRiskManager`        | Logic      | 許容ロットサイズの計算               | 実装済              | 実装済               | ✅ 完全共通  | 共通ヘッダー `Logic/` に配置 |
-| `CPriceCalculator`     | Logic      | SL/TP価格計算                        | 実装済              | 実装済               | ✅ 完全共通  | 補助クラスとして活用         |
-| `COrderExecutorBase`      | Trade      | パラメータ共通基底クラス               | 実装済            | 同左（共通）         | ✅ 完全共通  | すべてのExecutorの基盤 |
-| `CEntryExecutor`          | Trade      | 成行発注の実装                         | `OrderSend`      | `CTrade.Buy/Sell`   | ✅ 条件分岐  | `IMarketOrderExecutor` 実装 |
-| `CBEExecutor`             | Trade      | 建値移動の実装                         | `OrderModify`    | `CTrade.PositionModify` | ✅ 条件分岐  | `ISLModifier` 実装 |
-| `CPendingEntryExecutor`   | Trade      | 予約エントリー                         | OrderSend+type   | CTrade.BuyLimit等   | ✅ 条件分岐  | `IPendingOrderPlacer` 実装 |
-| `CExitExecutor`           | Trade      | 条件付き撤退                           | OrderCloseなど    | CTrade.PositionClose | ✅ 条件分岐  | `IExitEvaluator` 実装予定 |
-markdown
-コピーする
-編集する
-## 第5章. 実装ディレクトリ構成と再利用戦略（追記）
+#### ChartRenderer
+- **役割**：TP/SLライン・損益ラベルなどチャート上への描画を担当
+- **構成**：ObjectCreateベースでMQL4/5共通実装
 
 ---
 
-### 3.2 層別の共通化方針
+### 3.2 Logicモジュール
 
-#### ■ View層
-- **唯一非互換クラス：`CEntryPanel`**
-  - MQL4：OBJ_描画による擬似UI
-  - MQL5：CDialog＋CButton による標準UI
-  - → 当面は分離実装。将来的に `CEntryPanelBase` による共通I/F抽象化を検討
+#### CPanelStateManager
+- **役割**：パネル状態の遷移管理およびUIの有効・無効判定
+- **特徴**：状態を文字列で管理し、外部からの状態遷移に対応可能
 
-#### ■ Logic層
-- **すべてのクラスが共通化可能**
-  - `CEntryValidator`, `CPanelStateManager` は MQL非依存ロジック
-  - `CPositionModel` のみ内部API抽象化が必要だが、共通構造で管理可能
-  - → `/Include/Logic/` にて統一実装
+#### CEntryValidator
+- **役割**：スプレッドや時間帯など、エントリー事前条件の判定
+- **特徴**：ロジックはMQL非依存、他フェーズでも流用可能
 
-#### ■ Trade層
-- **API差異は条件付きプリプロセッサで吸収**
-  - `CEntryExecutor`, `CBEExecutor` は `#ifdef __MQL5__` による分岐で1ファイル共通実装
-  - 抽象ベース：`COrderExecutorBase` によって I/F 統一
-  - → `/Include/Trade/` 配下に格納し、構造分離と共通管理を両立
+#### CPositionModel
+- **役割**：ポジションの保有状態やチケット番号、エントリー価格の抽象化取得
+- **MQL対応**：`OrderSelect` / `PositionGet` のAPI差分を内部で吸収
 
----
+#### CRiskManager
+- **役割**：リスク率・SL距離に応じたロット数の計算
+- **備考**：内部で `RiskHelper.mqh` の関数を利用
 
-### 3.3 共通設計の要点
-
-- 共通化範囲はView以外に集中しており、**ロジック・実行処理の8割以上は1ソースで対応可能**
-- MQL5移行を見据えた設計のため、**今後の保守コスト・移植負荷を大幅に軽減**
-- すべてのクラスにおいて「責務明確・役割分離・MQL吸収」の3原則を徹底
+#### CBEPriceCalculator
+- **役割**：±0円損益となるBE価格（建値価格）を計算
+- **構成**：手数料・スワップ・pipValue補正を考慮した高精度計算
 
 ---
 
-> 参考ドキュメント：  
-> `EPT_spec_ModuleSharedMap_v1.0_Final.md`,  
-> `EPT_Class_v1.5.md`,  
-> `EPT_spec_StructureDesign.md`,  
-> `EPT_transitionPack.md`
+### 3.3 Tradeモジュール
+
+#### COrderExecutorBase
+- **役割**：すべてのExecutorクラスが共通で持つパラメータ（symbol, lot, comment等）を一元管理する抽象基底クラス
+
+#### CEntryExecutor
+- **役割**：成行エントリー処理（Buy/Sell）を担当
+- **I/F**：`IMarketOrderExecutor` を実装
+
+#### CPendingEntryExecutor
+- **役割**：指値・逆指値による予約注文エントリーを担当
+- **I/F**：`IPendingOrderPlacer` を実装
+
+#### CExitExecutor
+- **役割**：条件付きでポジションをクローズ（建値撤退など）
+- **I/F**：`IExitEvaluator`, `ISLModifier` を実装予定
+
+#### CTrailSLExecutor
+- **役割**：トレーリングSLの自動実行
+- **I/F**：`ISLModifier` を実装
 
 ---
+
 
 ## 第4章. API差分一覧と統合マッピング
 

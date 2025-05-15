@@ -21,69 +21,109 @@
 
 ### 2.1 CEntryPanel
 
-* **役割**：チャート上のUIパネルを描画し、ボタン操作を受け取る
-* **主な関数**：
+#### 役割
+チャート上のUIパネルを描画し、ボタン操作を受け取る
 
-  * `void CreateButtons()`：初期ボタン群の描画
-  * `void OnClick(string buttonName)`：ボタン押下時の処理分岐
-  * `void UpdateUIState(string newState)`：状態変化に応じたボタン状態更新
-* **依存クラス**：
+#### 主な関数
+- `void CreateButtons()`：初期ボタン群の描画
+- `void OnClick(string buttonName)`：ボタン押下時の処理分岐
+- `void UpdateUIState(string newState)`：状態変化に応じたボタン状態更新
 
-  * `CPanelStateManager`（状態判定）
-  * `CEntryExecutor`, `CBEExecutor`（発注処理）
+#### 依存クラス
+- `CPanelStateManager`（状態判定）
+- `CEntryExecutor`, `CBEExecutor`（発注処理）
+
+---
 
 ### 2.2 ChartRenderer
 
-* **役割**：TP/SLライン、損益ラベルなどをチャートに描画・更新する
-* **主な関数**：
+#### 役割
+TP/SLライン、損益ラベルなどをチャートに描画・更新する
 
-  * `void DrawTPLine(string symbol, double tpPrice)`
-  * `void UpdatePipsLabel(int ticket, double pips, string color)`
-  * `void FinalizeTradeDisplay(int ticket)`
-* **備考**：最大5件の取引履歴の視覚表示に対応
+#### 主な関数
+- `void DrawTPLine(string symbol, double tpPrice)`
+- `void UpdatePipsLabel(int ticket, double pips, string color)`
+- `void FinalizeTradeDisplay(int ticket)`
+
+#### 備考
+- 最大5件の取引履歴の視覚表示に対応
 
 ---
+
 
 ## 第3章. Logicモジュール設計
 
 ### 3.1 CPanelStateManager
 
-* **役割**：ボタン状態の可否を判定し、パネルの内部状態を管理する
-* **主な関数**：
+#### 役割
+ボタン状態の可否を判定し、パネルの内部状態を管理する
 
-  * `void UpdateState(string newState)`
-  * `string GetCurrentState()`
-  * `bool IsActiveState(string checkState)`
-* **依存クラス**：
+#### 主な関数
+- `void UpdateState(string newState)`
+- `string GetCurrentState()`
+- `bool IsActiveState(string checkState)`
 
-  * `CPositionModel`（ポジション有無）
-  * `CEntryValidator`（エントリー条件）
+#### 依存クラス
+- `CPositionModel`（ポジション有無）
+- `CEntryValidator`（エントリー条件）
+
+---
 
 ### 3.2 CEntryValidator
 
-* **役割**：スプレッドや取引時間などの発注条件をチェックする
-* **主な関数**：
+#### 役割
+スプレッドや取引時間などの発注条件をチェックする
 
-  * `bool IsTradableTime(datetime now)`
-  * `bool IsSpreadAcceptable(double spread)`
+#### 主な関数
+- `bool IsTradableTime(datetime now)`
+- `bool IsSpreadAcceptable(double spread)`
+
+---
 
 ### 3.3 CPositionModel
 
-* **役割**：保有ポジションの有無やエントリー価格などの情報を取得する
-* **主な関数**：
+#### 役割
+保有ポジションの有無やエントリー価格などの情報を取得する
 
-  * `bool HasOpenPosition(string symbol)`
-  * `double GetEntryPrice(string symbol)`
-  * `int GetTicket(string symbol)`
+#### 主な関数
+- `bool HasOpenPosition(string symbol)`
+- `double GetEntryPrice(string symbol)`
+- `int GetTicket(string symbol)`
+
+---
 
 ### 3.4 CRiskManager
 
-* **役割**：リスク許容範囲に応じたロット計算を行う
-* **主な関数**：
+#### 役割
+リスク許容範囲に応じたロット計算を行う
 
-  * `double CalculateRiskLot(...)`
-  * `double GetUsedLot()`
-* **依存関数**：`RiskHelper.mqh` の補助関数を使用
+#### 主な関数
+- `double CalculateRiskLot(...)`
+- `double GetUsedLot()`
+
+#### 依存関数
+- `RiskHelper.mqh` の補助関数を使用
+
+---
+
+### 3.5 CBEPriceCalculator
+
+#### 役割
+±0円となる建値ライン価格 (Break Even 価格) を計算するロジック専用クラス
+
+#### 主な関数
+- `double CalculateTrueBEPrice(int ticket)`
+- `double CalculateTrueBEPriceWithSlippage(int ticket, double slippagePips)`
+
+#### 処理内容
+- `OrderCommission()` や `OrderSwap()` を取得し、コストを円換算
+- pipValue補正 (tick → pip) を行い、pips → price に変換
+- BUY / SELL に応じて正しい方向に BE 価格を返す
+
+#### 特徴
+- BEライン描画や SL 自動移動など、±0円損益基準を要する機能の中核
+- OrderModify や 描画等の実行は他クラスに委譲
+- ログ出力を強化し、デバッグ分析やテストログにも有用
 
 ---
 
@@ -91,24 +131,27 @@
 
 ### 4.1 COrderExecutorBase
 
-* **役割**：すべてのExecutorクラスが共通して使用するパラメータ群（symbol, lot, SL/TP, commentなど）を一元管理する抽象基底クラス
-* **主な関数**：
-  * `void SetSymbol(string symbol)`
-  * `void SetVolume(double volume)`
-  * `string GetLastErrorMessage()`
-* **備考**：
-  * 他のすべてのExecutorはこのクラスを継承することで、共通のパラメータ初期化が可能
+#### 役割
+すべてのExecutorクラスが共通して使用するパラメータ群（symbol, lot, SL/TP, commentなど）を一元管理する抽象基底クラス
+
+#### 主な関数
+- `void SetSymbol(string symbol)`
+- `void SetVolume(double volume)`
+- `string GetLastErrorMessage()`
+
+#### 備考
+- 他のすべてのExecutorはこのクラスを継承することで、共通のパラメータ初期化が可能
 
 ---
 
 ### 4.2 Executorインターフェース群（CExecutorInterfaces.mqh）
 
-* **定義済みI/F**（複数継承可能）：
-  * `IMarketOrderExecutor`：成行エントリー／部分決済
-  * `ISLModifier`：SL変更・トレーリング処理
-  * `IPendingOrderPlacer`：予約注文エントリー
-  * `IExitEvaluator`：条件付きExit判定
-  * `IEntryConditionEvaluator`：スプレッド・時間帯などの事前検証
+#### 定義済みI/F（複数継承可能）
+- `IMarketOrderExecutor`：成行エントリー／部分決済
+- `ISLModifier`：SL変更・トレーリング処理
+- `IPendingOrderPlacer`：予約注文エントリー
+- `IExitEvaluator`：条件付きExit判定
+- `IEntryConditionEvaluator`：スプレッド・時間帯などの事前検証
 
 ---
 
@@ -117,14 +160,14 @@
 | クラス名                 | 実装I/F例                          | 主な責務                       |
 |--------------------------|-----------------------------------|------------------------------|
 | `CEntryExecutor`         | `IMarketOrderExecutor`            | 成行注文（SHORT / LONG）         |
-| `CBEExecutor`            | `ISLModifier`                     | 建値移動（SLをBEに変更）         |
 | `CPendingEntryExecutor`  | `IPendingOrderPlacer`             | 指値エントリー（PLAN対応）       |
 | `CExitExecutor`          | `IExitEvaluator`, `ISLModifier`   | 条件付き撤退 or 分割決済         |
 | `CTrailSLExecutor`       | `ISLModifier`                     | トレーリングSL自動処理           |
 
-* **備考**：
-  * 各クラスは必要なI/Fのみを実装する
-  * View層からは `interface_cast<>` 風の処理で呼び出し機能を判別
+#### 備考
+- `CBEExecutor` は `CBEPriceCalculator（Logic層）` に責務分離され、Executor構成から除外
+- 各クラスは必要なI/Fのみを実装する
+- View層からは `interface_cast<>` 風の処理で呼び出し機能を判別
 
 ---
 
@@ -135,11 +178,11 @@ Include/
 └── Trade/
     ├── COrderExecutorBase.mqh
     ├── CEntryExecutor.mqh
-    ├── CBEExecutor.mqh
     ├── CPendingEntryExecutor.mqh
     ├── CExitExecutor.mqh
     ├── CTrailSLExecutor.mqh
     └── CExecutorInterfaces.mqh
+```
 
 ---
 
@@ -147,33 +190,47 @@ Include/
 
 ### 5.1 RiskHelper.mqh
 
-* **役割**：リスク率に基づくロット数計算、ロット丸め処理など
-* **主な関数**：
+#### 役割
+リスク率に基づくロット数計算、ロット丸め処理など
 
-  * `double CalcLotByRisk(...)`
-  * `double RoundLotToStep(double lot)`
-* **使用元**：`CRiskManager`
+#### 主な関数
+- `double CalcLotByRisk(...)`
+- `double RoundLotToStep(double lot)`
+
+#### 使用元
+- `CRiskManager`
+
+---
 
 ### 5.2 PriceCalculator.mqh
 
-* **役割**：エントリー価格・SL・TP価格の計算
-* **主な関数**：
+#### 役割
+エントリー価格・SL・TP価格の計算
 
-  * `double CalcSLFromEntry(...)`
-  * `double CalcTPFromEntry(...)`
-* **使用元**：`CEntryExecutor`, `CBEExecutor`
+#### 主な関数
+- `double CalcSLFromEntry(...)`
+- `double CalcTPFromEntry(...)`
+
+#### 使用元
+- `CEntryExecutor`, `CBEExecutor`
+
+---
 
 ### 5.3 CommonDefs.mqh
 
-* **役割**：定数、色、補助演算関数などを定義
-* **主な関数／定義**：
+#### 役割
+定数、色、補助演算関数などを定義
 
-  * `#define EPT_VERSION "v1.5"`
-  * `int PipsToPoints(...)`
-  * `double NormalizeLot(...)`
-* **使用元**：全体共通
+#### 主な関数／定義
+- `#define EPT_VERSION "v1.5"`
+- `int PipsToPoints(...)`
+- `double NormalizeLot(...)`
+
+#### 使用元
+- 全体共通
 
 ---
+
 
 ## 第6章. クラス間依存マトリクスと連携図
 
