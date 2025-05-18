@@ -134,3 +134,4 @@
 | 86 | 2025/05/14 | EPT_operationalGuide_v2.0.md | v2.0 | 補足追記 | 第5章 5.1節の補足として、ログ出力テンプレートをLOG_◯◯_◯◯マクロへ統一する運用ルールを追加 | 【ガイド追記】ログ設計ルール（カテゴリ×レベルの12分類対応） |
 | 87 | 2025/05/14 | EPT_guidelines_v2.0.md | v2.0 | 節構成変更 | 第3.1節「デバッグ出力規約」をLOGマクロ形式に再構成し、DebugPrintの廃止・移行方針を明示化 | 【ガイド追記】ログ設計ルール（カテゴリ×レベルの12分類対応） |
 | 88 | 2025-05-15 | EPT_Class_v2.0.md | v2.0 | Logic | CBEPriceCalculatorクラスの実装完了（実損益ベースで±0円建値価格を算出。方向ロジック・pipValue補正・ログ出力対応） | 【実装対応】CBEExecutorのBE実行ロジック修正 |
+| 89 | 2025-05-15 | EPT_spec_MQL_Designs_v2.0.md | v2.0 | Design | BE機能分離に伴い CBEPriceCalculator をLogic層に追加、Trade層から CBEExecutor を除外 | 【実装対応】CBEExecutorのBE実行ロジック修正 |
