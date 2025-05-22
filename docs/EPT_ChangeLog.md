@@ -135,7 +135,9 @@
 | 87 | 2025/05/14 | EPT_guidelines_v2.0.md | v2.0 | 節構成変更 | 第3.1節「デバッグ出力規約」をLOGマクロ形式に再構成し、DebugPrintの廃止・移行方針を明示化 | 【ガイド追記】ログ設計ルール（カテゴリ×レベルの12分類対応） |
 | 88 | 2025-05-15 | EPT_Class_v2.0.md | v2.0 | Logic | CBEPriceCalculatorクラスの実装完了（実損益ベースで±0円建値価格を算出。方向ロジック・pipValue補正・ログ出力対応） | 【実装対応】CBEExecutorのBE実行ロジック修正 |
 | 89 | 2025-05-15 | EPT_spec_MQL_Designs_v2.0.md | v2.0 | Design | BE機能分離に伴い CBEPriceCalculator をLogic層に追加、Trade層から CBEExecutor を除外 | 【実装対応】CBEExecutorのBE実行ロジック修正 |
-| XX | 2025/05/18 | EPT_CPanelStateManager_Spec_v1.0.md | v1.0 | 内容補完 | 第5章に使用タイミング・補足を追記、第6章に関数使用例を追加、第8章にまとめ章を新設し、実装／運用視点での参照性を高めた | 【実装】CPanelStateManagerのヘッダー実装 |
-| XX | 2025/05/18 | EPT_codingStandards_v1.0.md | v1.0 | 章追加 | 第6章「ログ出力ルール」新設。旧logRule_v1.3とguideline_log_sectionの内容を統合し、カテゴリ×レベル12分類と出力規則を正式化 | LogRule統合とCoding規約整理 |
-| XX | 2025/05/18 | EPT_operationalGuide_v2.0.md | v2.0 | 表記修正 | ログ出力ルールの定義を `EPT_codingStandards_v1.0.md` 第6章へ正式移管し、1.3節と5.1節の記述を整理・差し替え | LogRule統合とCoding規約整理 |
-| XX | 2025/05/19 | EPT_codingStandards_v1.0.md | v1.0 | リネーム | ファイル名のスペル誤記（Cording → Coding）を修正し、プロジェクト全体と整合 | LogRule統合とCoding規約整理 |
+| 90 | 2025/05/18 | EPT_CPanelStateManager_Spec_v1.0.md | v1.0 | 内容補完 | 第5章に使用タイミング・補足を追記、第6章に関数使用例を追加、第8章にまとめ章を新設し、実装／運用視点での参照性を高めた | 【実装】CPanelStateManagerのヘッダー実装 |
+| 91 | 2025/05/18 | EPT_codingStandards_v1.0.md | v1.0 | 章追加 | 第6章「ログ出力ルール」新設。旧logRule_v1.3とguideline_log_sectionの内容を統合し、カテゴリ×レベル12分類と出力規則を正式化 | LogRule統合とCoding規約整理 |
+| 92 | 2025/05/18 | EPT_operationalGuide_v2.0.md | v2.0 | 表記修正 | ログ出力ルールの定義を `EPT_codingStandards_v1.0.md` 第6章へ正式移管し、1.3節と5.1節の記述を整理・差し替え | LogRule統合とCoding規約整理 |
+| 93 | 2025/05/19 | EPT_codingStandards_v1.0.md | v1.0 | リネーム | ファイル名のスペル誤記（Cording → Coding）を修正し、プロジェクト全体と整合 | LogRule統合とCoding規約整理 |
+| 94 | 2025/05/21 | EPT_Class_v2.0.md | v2.0 | 章追加 | Logicモジュールに新クラス「CPanelState」を追加。状態オブジェクトの定義・比較・変換機能を明示し、CPanelStateManagerの内部状態として統合可能な構造を記述（L73〜L101） | 【クラス設計】CPanelState：状態オブジェクト設計（Stateパターン適用） |
+| 95 | 2025/05/23 | TestBootstrap.mqh | v1.0 | 新規作成 | モック初期化の共通構造を定義。MockConfig, OrderMockConfig の2種構造体とOnInit_TestBootstrap()関数を実装 | 【共通構成】TestBootstrap導入と初期構成の作成 |
