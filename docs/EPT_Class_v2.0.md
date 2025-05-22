@@ -69,7 +69,30 @@ TP/SLライン、損益ラベルなどをチャートに描画・更新する
 
 ---
 
-### 3.2 CEntryValidator
+### 3.2 CPanelState
+
+#### 役割  
+状態（Idle／ReadyToEntry／PositionOpen／BEAvailable／Invalid）をオブジェクトで表現し、状態の比較・判定・変換を担う。
+
+#### 主な関数
+- `string getName()`：状態名を返す
+- `bool equals(CPanelState* other)`：他の状態オブジェクトと比較
+- `static CPanelState* fromEnum(int value)`：enum値から状態を生成
+- `static CPanelState* fromString(string name)`：文字列から状態を生成
+- `static CPanelState* getXxx()`：各状態（Idleなど）を返す定数関数群
+
+#### 使用箇所
+- `CPanelStateManager` の内部状態保持（`m_currentState`）
+- `CEntryPanel` などの状態確認・UI切り替え条件
+
+#### 特徴
+- enumや文字列による煩雑な条件分岐を、**一意な状態オブジェクト**によって置き換える
+- `equals()` によって状態比較が明確・安全に行える
+- 将来的に状態オブジェクトに振る舞い（`canEnter()`, `isReady()` 等）を持たせる拡張も可能
+
+---
+
+### 3.3 CEntryValidator
 
 #### 役割
 スプレッドや取引時間などの発注条件をチェックする
@@ -80,7 +103,7 @@ TP/SLライン、損益ラベルなどをチャートに描画・更新する
 
 ---
 
-### 3.3 CPositionModel
+### 3.4 CPositionModel
 
 #### 役割
 保有ポジションの有無やエントリー価格などの情報を取得する
@@ -92,7 +115,7 @@ TP/SLライン、損益ラベルなどをチャートに描画・更新する
 
 ---
 
-### 3.4 CRiskManager
+### 3.5 CRiskManager
 
 #### 役割
 リスク許容範囲に応じたロット計算を行う
@@ -106,7 +129,7 @@ TP/SLライン、損益ラベルなどをチャートに描画・更新する
 
 ---
 
-### 3.5 CBEPriceCalculator
+### 3.6 CBEPriceCalculator
 
 #### 役割
 ±0円となる建値ライン価格 (Break Even 価格) を計算するロジック専用クラス
