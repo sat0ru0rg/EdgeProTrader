@@ -141,3 +141,8 @@
 | 93 | 2025/05/19 | EPT_codingStandards_v1.0.md | v1.0 | リネーム | ファイル名のスペル誤記（Cording → Coding）を修正し、プロジェクト全体と整合 | LogRule統合とCoding規約整理 |
 | 94 | 2025/05/21 | EPT_Class_v2.0.md | v2.0 | 章追加 | Logicモジュールに新クラス「CPanelState」を追加。状態オブジェクトの定義・比較・変換機能を明示し、CPanelStateManagerの内部状態として統合可能な構造を記述（L73〜L101） | 【クラス設計】CPanelState：状態オブジェクト設計（Stateパターン適用） |
 | 95 | 2025/05/23 | TestBootstrap.mqh | v1.0 | 新規作成 | モック初期化の共通構造を定義。MockConfig, OrderMockConfig の2種構造体とOnInit_TestBootstrap()関数を実装 | 【共通構成】TestBootstrap導入と初期構成の作成 |
+| 96 | 2025/05/28 | Test_CPanelState_UseCase.mq4 | v1.0 | 新規作成 | UC01（SL→エントリー→決済）を正常遷移で検証。ログ出力と状態Assertにより完全なトレース可能。 | 【ユースケース】CPanelStateManager UC01検証 |
+| 97 | 2025/05/28 | EntryPanelController.mqh | v1.0 | 新規作成 | 状態遷移と発注処理を統括する中間層。View層からStateManager/Executorを制御。 | 【共通構成】状態制御コントローラの導入 |
+| 98 | 2025/05/28 | CPositionModel.mqh | v1.1 | 機能拡張 | OrderSelect/OrderType による実勢ポジション抽出に対応。モック構造を廃止し実運用設計に移行。 | 【モデル層】ポジションモデルを実勢仕様に変更 |
+| 99 | 2025/05/28 | CEntryExecutor.mqh | v1.1 | 機能拡張 | Execute/ClosePartial で StateManager に状態通知を追加。SetStateManager() を追加実装。 | 【発注処理】状態遷移通知ロジックを統合 |
+| 100 | 2025/05/28 | CommonDefs.mqh | v1.1 | 機能追加 | PipToPrice() によりpips指定の価格変換に対応。注文価格ロジックを簡素化。 | 【共通関数】pips変換関数の標準化 |
