@@ -146,3 +146,5 @@
 | 98 | 2025/05/28 | CPositionModel.mqh | v1.1 | 機能拡張 | OrderSelect/OrderType による実勢ポジション抽出に対応。モック構造を廃止し実運用設計に移行。 | 【モデル層】ポジションモデルを実勢仕様に変更 |
 | 99 | 2025/05/28 | CEntryExecutor.mqh | v1.1 | 機能拡張 | Execute/ClosePartial で StateManager に状態通知を追加。SetStateManager() を追加実装。 | 【発注処理】状態遷移通知ロジックを統合 |
 | 100 | 2025/05/28 | CommonDefs.mqh | v1.1 | 機能追加 | PipToPrice() によりpips指定の価格変換に対応。注文価格ロジックを簡素化。 | 【共通関数】pips変換関数の標準化 |
+| 101 | 2025/05/29 | archive.zip（6ファイル圧縮） | 構成変更 | 更新頻度の低い設計系mdファイルをarchive.zipに集約      | 【運用ルール】ローカル手動運用＋テンプレ整備対応 |
+| 102 | 2025/05/29 | archive.zip（7ファイル圧縮） | 構成変更 | 更新頻度の低い設計系mdファイルをarchive.zipに集約      | 【運用ルール】ローカル手動運用＋テンプレ整備対応 |
