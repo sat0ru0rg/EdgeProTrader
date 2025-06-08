@@ -46,16 +46,28 @@
 
 ### 3.1 デバッグ出力規約（LOGマクロの統一構造）
 
-本プロジェクトでは、すべてのログ出力は `LOG_<カテゴリ>_<レベル>()` 形式のマクロによって行う。  
-旧 `DebugPrint()` は廃止対象とし、今後の開発では使用禁止とする。
+本プロジェクトでは、すべてのログ出力は `LOG_<カテゴリ>_<レベル>_C()` 形式のマクロによって行い、**クラス名・関数名は `__FUNCTION__` により自動的に出力される構成**とします。旧 `DebugPrint()` は廃止対象とし、今後の開発では使用禁止とします。
 
 #### ✅ マクロ構文
 
 ```mql4
-LOG_LOGIC_DEBUG("スプレッド条件チェック開始");
-LOG_ACTION_INFO("建値移動完了 Ticket=123456");
-LOG_VIEW_ERROR("TPライン描画失敗 → objName: TP_1");
+LOG_LOGIC_DEBUG_C("スプレッド条件チェック開始");
+LOG_ACTION_INFO_C("建値移動完了 Ticket=123456");
+LOG_VIEW_ERROR_C("TPライン描画失敗 → objName: TP_1");
 ```
+
+#### ✅ 出力フォーマット例
+
+ログ出力は以下のような形式となります：
+
+```
+[ACTION][ERROR] CEntryExecutor::ExecuteEntry ロット計算失敗
+[LOGIC][DEBUG] CEntryExecutor::CheckSpread スプレッド条件チェック開始
+[VIEW][ERROR] CChartDrawer::DrawTPLine TPライン描画失敗 → objName: TP_1
+```
+
+- カテゴリ・レベル・クラス名・関数名は自動的に付与されます。
+- **関数名を明示的に指定する形式（例：LOG_ACTION_ERROR_C("ExecuteEntry", "...")）は使用しません。**
 
 #### ✅ 使用ルール
 
@@ -65,10 +77,11 @@ LOG_VIEW_ERROR("TPライン描画失敗 → objName: TP_1");
 - マクロ定義は `EPT_EnvConfig.mqh` にて提供される（12種）
 - ログレベルの選択基準は `EPT_logRule_Draft_v1.3.md` 第4章を参照
 - クラス／関数単位で一貫したカテゴリを使用し、粒度の明確な出力を行う
+- **クラス名・関数名は `__FUNCTION__` から自動取得されるため、マクロ呼び出し時に明示的に指定しないこと**
 
 #### ✅ 移行方針
 
-- 既存の `DebugPrint()` は段階的に `LOG_◯◯_◯◯()` に差し替える
+- 既存の `DebugPrint()` は段階的に `LOG_◯◯_◯◯_C()` に差し替える
 - マクロは `DebugMode` フラグにより全体出力を制御可能
 
 > 🔗 詳細な分類・判定基準・使用例は `EPT_logRule_Draft_v1.3.md` に準拠。
@@ -89,21 +102,22 @@ LOG_VIEW_ERROR("TPライン描画失敗 → objName: TP_1");
 
 > この命名整合性により、設計のトレース性とIDEでの検索性が大幅に向上する。
 
-#### 3.4 推奨ログ出力マクロ（クラス名＋関数名付きログ）
+#### 3.4 推奨ログ出力マクロ（クラス名＋関数名は自動付与）
 
-ログ出力は、**クラス名と関数名を明示したフォーマット**で統一してください。具体的には以下のログマクロ（`LOG_***_C()`）を使用します：
+ログ出力は、**クラス名と関数名が `__FUNCTION__` により自動的に付与されるフォーマット**で統一してください。具体的には以下のログマクロ（`LOG_***_C()`）を使用します：
 
 ```mql4
 #define __CLASS__ "CEntryExecutor"  // ← 各クラス先頭で定義が必要
 
-LOG_ACTION_INFO_C(__CLASS__, "エントリー処理を開始します");
-LOG_LOGIC_DEBUG_C(__CLASS__, "内部状態の確認ログです");
-LOG_VIEW_ERROR_C(__CLASS__, "描画に失敗しました");
+LOG_ACTION_INFO_C("エントリー処理を開始します");
+LOG_LOGIC_DEBUG_C("内部状態の確認ログです");
+LOG_VIEW_ERROR_C("描画に失敗しました");
 ```
 
 ##### 📌 注意事項
 - `__CLASS__` は `#define` によりクラスごとに明示してください。
-- `__FUNCTION__` は MQL4 標準マクロで現在の関数名を取得します。
+- `__FUNCTION__` は MQL4 標準マクロで現在の関数名を自動取得します。
+- **関数名を明示的に指定する形式（例：LOG_ACTION_ERROR_C("ExecuteEntry", "...")）は使用禁止です。**
 
 #### 3.5 非推奨マクロと移行方針
 

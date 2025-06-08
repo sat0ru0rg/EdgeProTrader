@@ -139,65 +139,87 @@ MQL4/MQL5両対応の拡張性を確保するため、条件付きプリプロ�
 
 ---
 
-### 6.3 ログ出力マクロ定義（12分類）
+### 6.3 ログ出力マクロ定義（12分類・*_C形式）
 
 ```mql4
-#define LOG_VIEW_DEBUG(msg)     if(DebugMode) Print("[VIEW][DEBUG] ", msg)
-#define LOG_VIEW_INFO(msg)      if(DebugMode) Print("[VIEW][INFO] ", msg)
-#define LOG_VIEW_ERROR(msg)     if(DebugMode) Print("[VIEW][ERROR] ", msg)
+#define LOG_VIEW_DEBUG_C(msg)     if(DebugMode) Print("[VIEW][DEBUG] ", __CLASS__, "::", __FUNCTION__, " ", msg)
+#define LOG_VIEW_INFO_C(msg)      if(DebugMode) Print("[VIEW][INFO] ", __CLASS__, "::", __FUNCTION__, " ", msg)
+#define LOG_VIEW_ERROR_C(msg)     if(DebugMode) Print("[VIEW][ERROR] ", __CLASS__, "::", __FUNCTION__, " ", msg)
 
-#define LOG_LOGIC_DEBUG(msg)    if(DebugMode) Print("[LOGIC][DEBUG] ", msg)
-#define LOG_LOGIC_INFO(msg)     if(DebugMode) Print("[LOGIC][INFO] ", msg)
-#define LOG_LOGIC_ERROR(msg)    if(DebugMode) Print("[LOGIC][ERROR] ", msg)
+#define LOG_LOGIC_DEBUG_C(msg)    if(DebugMode) Print("[LOGIC][DEBUG] ", __CLASS__, "::", __FUNCTION__, " ", msg)
+#define LOG_LOGIC_INFO_C(msg)     if(DebugMode) Print("[LOGIC][INFO] ", __CLASS__, "::", __FUNCTION__, " ", msg)
+#define LOG_LOGIC_ERROR_C(msg)    if(DebugMode) Print("[LOGIC][ERROR] ", __CLASS__, "::", __FUNCTION__, " ", msg)
 
-#define LOG_ACTION_DEBUG(msg)   if(DebugMode) Print("[ACTION][DEBUG] ", msg)
-#define LOG_ACTION_INFO(msg)    if(DebugMode) Print("[ACTION][INFO] ", msg)
-#define LOG_ACTION_ERROR(msg)   if(DebugMode) Print("[ACTION][ERROR] ", msg)
+#define LOG_ACTION_DEBUG_C(msg)   if(DebugMode) Print("[ACTION][DEBUG] ", __CLASS__, "::", __FUNCTION__, " ", msg)
+#define LOG_ACTION_INFO_C(msg)    if(DebugMode) Print("[ACTION][INFO] ", __CLASS__, "::", __FUNCTION__, " ", msg)
+#define LOG_ACTION_ERROR_C(msg)   if(DebugMode) Print("[ACTION][ERROR] ", __CLASS__, "::", __FUNCTION__, " ", msg)
 
-#define LOG_TEST_DEBUG(msg)     if(DebugMode) Print("[TEST][DEBUG] ", msg)
-#define LOG_TEST_INFO(msg)      if(DebugMode) Print("[TEST][INFO] ", msg)
-#define LOG_TEST_ERROR(msg)     if(DebugMode) Print("[TEST][ERROR] ", msg)
+#define LOG_TEST_DEBUG_C(msg)     if(DebugMode) Print("[TEST][DEBUG] ", __CLASS__, "::", __FUNCTION__, " ", msg)
+#define LOG_TEST_INFO_C(msg)      if(DebugMode) Print("[TEST][INFO] ", __CLASS__, "::", __FUNCTION__, " ", msg)
+#define LOG_TEST_ERROR_C(msg)     if(DebugMode) Print("[TEST][ERROR] ", __CLASS__, "::", __FUNCTION__, " ", msg)
 ```
 
----
-
-### 6.4 ログレベル選定基準（INFO / DEBUG / ERROR）
-
-| レベル   | 出力目的           | 適用例                      |
-| ----- | -------------- | ------------------------ |
-| DEBUG | 処理途中の詳細（中間値など） | 計算ステップ、フラグ判定、ループ進捗       |
-| INFO  | 正常系の結果・操作ログ    | 発注完了、描画完了、状態遷移、条件成立      |
-| ERROR | 異常系・例外発生時      | 発注失敗、描画エラー、Null参照、APIエラー |
+> ※ `*_C(msg)` の1引数形式に統一し、関数名はマクロ内で `__FUNCTION__` により自動取得されます。`__CLASS__` も併用することで、クラス名::関数名が自動で出力されます。
 
 ---
 
-### 6.5 ヘルパー関数での出力指針
+### 6.4 ログ出力の基本フォーマット
+
+ログ出力は以下のフォーマットで統一します：
+
+```
+[カテゴリ][レベル] クラス::関数 メッセージ
+```
+
+#### 例：
+- `[LOGIC][INFO] CEntryExecutor::ClosePartial 成功しました`
+- `[ACTION][ERROR] COrderManager::SendOrder 発注に失敗しました (code=130)`
+
+---
+
+### 6.5 使用例とベストプラクティス
 
 ```mql4
-double CalcLotByRisk(double riskMoney, double slPips, string tag = "")
+void ClosePartial()
 {
-    double lot = (riskMoney / slPips) * 0.1;
+    LOG_LOGIC_DEBUG_C("処理を開始します");
+    // ...処理...
+    LOG_LOGIC_INFO_C("部分決済に成功しました");
+}
 
-    // 明示ログ出力（必要時のみ有効化）
-    // if (tag != "")
-    //     LOG_LOGIC_DEBUG("[" + tag + "] Lot計算: risk=" + riskMoney + ", SL=" + slPips + ", lot=" + lot);
+void DrawPanel()
+{
+    LOG_VIEW_INFO_C("パネル描画完了");
+}
 
-    return lot;
+void SendOrder()
+{
+    LOG_ACTION_ERROR_C("発注に失敗しました (code=130)");
 }
 ```
 
+> ※ 旧形式のような関数名明示（例: `LOG_LOGIC_INFO_C("ClosePartial", "成功")`）は不要です。
+
 ---
 
-### 6.6 置換例とベストプラクティス
+### 6.6 補足：旧形式との違いと1引数形式の推奨理由
 
-| Before（旧DebugPrint）                 | After（置換後マクロ）                        |
-| ----------------------------------- | ------------------------------------ |
-| `DebugPrint("[ACTION] Entry sent")` | `LOG_ACTION_INFO("Entry sent")`      |
-| `DebugPrint("[LOGIC] Spread OK")`   | `LOG_LOGIC_DEBUG("Spread OK")`       |
-| `DebugPrint("[VIEW] TP描画完了")`       | `LOG_VIEW_INFO("TP描画完了")`            |
-| `DebugPrint("[TEST] passed")`       | `LOG_TEST_INFO("basic test passed")` |
+#### 旧形式（関数名明示）
+```mql4
+LOG_LOGIC_INFO_C("ClosePartial", "成功しました");
+```
 
-> ❌ `DebugPrint()`は禁止。必ず `LOG_◯◯_◯◯()` に統一すること。
+#### 新形式（`__FUNCTION__`自動取得）
+```mql4
+LOG_LOGIC_INFO_C("成功しました");
+```
+
+#### 1引数形式のメリット
+- 関数名の記述ミスや変更漏れを防止できる
+- コードがシンプルで一貫性が保てる
+- メンテナンス性・可読性が向上する
+
+> すべてのログ出力は1引数形式（`*_C(msg)`）を使用し、関数名は自動で出力される設計としてください。
 
 ---
 
