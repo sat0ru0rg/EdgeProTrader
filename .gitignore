@@ -52,7 +52,14 @@ $RECYCLE.BIN/
 # ────────────────
 # 🧰 IDE／エディタ構成ファイル
 # ────────────────
-.vscode/
+# ↓ この行を削除またはコメントアウト
+#.vscode/
+
+# ↓ 明示的に共有したいファイルを追加（必要に応じて）
+!.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/keybindings.json
 .idea/
 *.code-workspace
 
