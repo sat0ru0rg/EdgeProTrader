@@ -15,7 +15,7 @@
 int OnInit()
   {
 //---
-   
+   Print("TEST OK !!!");
 //---
    return(INIT_SUCCEEDED);
   }
