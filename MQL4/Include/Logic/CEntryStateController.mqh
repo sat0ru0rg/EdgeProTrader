@@ -20,6 +20,7 @@ private:
     bool hasTPLine;
     bool hasBELine;
 
+    string m_currentUC;  // ← ユースケース識別子を保持
     EntryMode currentEntryMode;
 
 public:
@@ -39,13 +40,33 @@ public:
         m_executor.SetSymbol(_Symbol);
         m_executor.SetVolume(0.1);
         m_executor.SetSlippage(3);
-        m_executor.SetStopLoss(30);
-        m_executor.SetTakeProfit(60);
+        m_executor.SetStopLoss(300);
+        m_executor.SetTakeProfit(600);
         m_executor.SetStateManager(&m_stateManager);
         m_executor.SetPositionModel(&m_positionModel);
 
         LOG_LOGIC_INFO_C("CEntryStateController::Initialize 完了");
     }
+    
+    // Getter for Executor
+    CEntryExecutor* GetExecutor()
+    {
+        return &m_executor;
+    }
+    
+    // Getter for StateManager
+    CPanelStateManager* GetStateManager()
+    {
+        return &m_stateManager;
+    }
+
+void SetCurrentUC(string uc)
+{
+    m_currentUC = uc;
+    m_stateManager.SetCurrentUC(uc);  // Managerにも転送（任意）
+    LOG_LOGIC_INFO_C("SetCurrentUC 実行：UC=" + uc + " に設定");
+}
+
 
     //+------------------------------------------------------------------+
     //| Entryボタン押下処理                                              |
@@ -57,7 +78,8 @@ public:
     
         if (state != "ReadyToEntry")
         {
-            LOG_LOGIC_ERROR_C("[PanelState] Entry通知はReadyToEntry状態でのみ有効。現在: " + state);
+            LOG_LOGIC_ERROR_C("[PanelState] Entry通知はReadyToEntry状態でのみ有効。現在: " + state +
+                              " ※このログはUI未実装のため発生していますが、将来はUI側でEntryボタンを無効化することで回避される想定です。");
             return;
         }
     
@@ -76,12 +98,13 @@ public:
     //+------------------------------------------------------------------+
     void OnSLButtonClicked()
     {
-        string state = m_stateManager.GetCurrentState();
-        LOG_LOGIC_DEBUG_C("OnSLButtonClicked 呼び出し. 現在状態: " + state);
+        string currentState = m_stateManager.GetCurrentState();
+        LOG_LOGIC_DEBUG_C("OnSLButtonClicked 呼び出し. 現在状態: " + currentState);
     
-        if (state != "Idle")
+        if (currentState != "Idle")
         {
-            LOG_LOGIC_ERROR_C("[PanelState] SL表示はIdle状態でのみ有効。現在: " + state);
+            LOG_LOGIC_ERROR_C("[PanelState] SL表示はIdle状態でのみ有効。現在: " + currentState + 
+                                " ※これはUI未実装により一時的に通過しているが、将来はUIで制御予定のためWARNING的意味合い");
             return;
         }
     
@@ -99,26 +122,148 @@ public:
     //+------------------------------------------------------------------+
     //| Closeボタン押下処理                                              |
     //+------------------------------------------------------------------+
-    void OnCloseButtonClicked()
+/*    void OnCloseButtonClicked()
     {
-        string state = m_stateManager.GetCurrentState();
-        LOG_LOGIC_DEBUG_C("OnCloseButtonClicked 呼び出し. 現在状態: " + state);
-    
-        if (state != "PositionOpen")
+        // ユースケース識別コメントを取得し、Executorへ伝達
+        string ucComment = m_stateManager.GetCurrentUC();             // ← 追加
+        m_executor.SetComment(ucComment);                             // ← 追加
+        
+        // Close前のポジション情報を取得・ログ出力
+        int before[10];
+        m_positionModel.GetPositionTickets(_Symbol, before);
+        for (int i = 0; i < ArraySize(before); i++)
         {
-            LOG_LOGIC_ERROR_C("[PanelState] Close通知はPositionOpen状態でのみ有効。現在: " + state);
+            if (before[i] != -1)
+                LOG_LOGIC_INFO_C("Close前: OpenTicket = " + IntegerToString(before[i]));
+        }
+    
+        // 現在のオープンチケット取得（ユースケース識別付き）
+        int ticket = m_positionModel.GetOpenTicket(_Symbol, ucComment);  // ← 修正
+        if (ticket == -1)
+        {
+            LOG_LOGIC_ERROR_C("GetOpenTicket 失敗：ポジションが存在しません");
             return;
         }
     
-        if (m_executor.ClosePartial(currentEntryMode))
+        // ロット数取得（OrderSelect 必須）
+        if (!OrderSelect(ticket, SELECT_BY_TICKET))
         {
-            LOG_LOGIC_INFO_C("[PanelState] ポジション決済完了。状態遷移はExecutor→StateManagerにて通知済み");
+            LOG_LOGIC_ERROR_C("OrderSelect に失敗しました");
+            return;
+        }
+        double lots = OrderLots();
+    
+        // クローズ処理
+        bool closed = m_executor.ClosePartial(ticket, lots);
+        if (!closed)
+        {
+            LOG_LOGIC_ERROR_C("ClosePartial に失敗しました");
+            return;
+        }
+    
+        LOG_LOGIC_INFO_C("ClosePartial を実行しました");
+    
+        // Close後のポジション情報を取得・ログ出力
+        int after[10];
+        m_positionModel.GetPositionTickets(_Symbol, after);
+        for (int ii = 0; ii < ArraySize(after); ii++)
+        {
+            if (after[ii] != -1)
+                LOG_LOGIC_INFO_C("Close後: OpenTicket = " + IntegerToString(after[ii]));
+        }
+    
+        // 状態遷移判定
+        int remaining = m_positionModel.CountOpenPositions(_Symbol);
+        LOG_LOGIC_INFO_C("OnCloseButtonClicked 内部確認: OpenPositionCount = " + IntegerToString(remaining));
+    
+        if (remaining == 0)
+        {
+//            m_stateManager.OnPositionClosed();  // ← 正しいメンバ呼び出し
         }
         else
         {
-            LOG_ACTION_ERROR_C("Close失敗: ポジション決済に失敗しました");
+            LOG_LOGIC_INFO_C("ポジション残ありのため Idle 遷移は行わない");
         }
+    }*/
+void OnCloseButtonClicked()
+{
+    string uc = m_currentUC;
+
+    // Close前のポジション情報を取得・ログ出力
+    int before[10];
+    m_positionModel.GetPositionTickets(_Symbol, before);
+    for (int i = 0; i < ArraySize(before); i++)
+    {
+        if (before[i] != -1)
+            LOG_LOGIC_INFO_C("Close前: OpenTicket = " + IntegerToString(before[i]));
     }
+
+    // 現在UCに一致するオープンチケットを取得
+    int ticket = m_positionModel.GetOpenTicket(_Symbol, uc);
+    if (ticket == -1)
+    {
+        LOG_LOGIC_ERROR_C("GetOpenTicket 失敗：UC=" + uc + " に該当するポジションが存在しません");
+        return;
+    }
+
+    // ロット数取得（OrderSelect 必須）
+    if (!OrderSelect(ticket, SELECT_BY_TICKET))
+    {
+        LOG_LOGIC_ERROR_C("OrderSelect に失敗しました");
+        return;
+    }
+    double lots = OrderLots();
+
+    // クローズ処理
+    bool closed = m_executor.ClosePartial(ticket, lots);
+    if (!closed)
+    {
+        LOG_LOGIC_ERROR_C("ClosePartial に失敗しました");
+        return;
+    }
+
+    LOG_LOGIC_INFO_C("ClosePartial を実行しました");
+
+    // Close後のポジション情報を取得・ログ出力
+    int after[10];
+    m_positionModel.GetPositionTickets(_Symbol, after);
+    for (int ii = 0; ii < ArraySize(after); ii++)
+    {
+        if (after[ii] != -1)
+            LOG_LOGIC_INFO_C("Close後: OpenTicket = " + IntegerToString(after[ii]));
+    }
+
+    // 現在UCに属するポジション数を確認
+    int remaining = m_positionModel.CountOpenPositions(_Symbol, uc);
+    LOG_LOGIC_INFO_C("OnCloseButtonClicked: CountOpenPositions (UC=" + uc + ") = " + IntegerToString(remaining));
+
+    if (remaining == 0)
+    {
+        m_stateManager.OnPositionClosed();  // 状態通知
+    }
+    else
+    {
+        LOG_LOGIC_INFO_C("ポジション残ありのため Idle 遷移は行わない");
+    }
+}
+
+
+
+    int CountOpenPositions(string symbol, string comment)
+    {
+        int count = 0;
+        for (int i = 0; i < OrdersTotal(); i++)
+        {
+            if (OrderSelect(i, SELECT_BY_POS, MODE_TRADES))
+            {
+                if (OrderSymbol() == symbol && StringFind(OrderComment(), comment) == 0)
+                    count++;
+            }
+        }
+        return count;
+    }
+
+
     
     //+------------------------------------------------------------------+
     //| BEボタン押下処理（トグル表示）                                   |
