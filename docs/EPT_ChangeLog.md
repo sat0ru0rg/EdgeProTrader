@@ -158,3 +158,5 @@
 | 110 | 2025/06/08 | CEntryStateController.mqh | v1.1 | クラス名変更 | EntryPanelController を CEntryStateController にリネーム。クラス定義・ファイル名・インスタンス名を全プロジェクト内で統一 | 【クラス構成】命名規約統一・責務明確化のための改名対応 |
 | 111 | 2025/06/08 | Test_CPanelState_UseCase.mq4 | v1.1 | クラス参照更新 | CEntryStateController へのクラス名変更にともない、型名・変数名・includeパスを修正 | 【テスト更新】旧クラス名参照を一括変更対応 |
 | 112 | 2025-06-09 | FIX    | ユースケーステスト全8種における状態遷移を検証し、ログ整備・責務整理・初期化処理を確立 | gizmo様  | CPanelStateManager実装検証 | 全UC合格を確認済 |
+| 113 | 2025-06-10 | ADD    | Mediator構造設計・責務分離用ドキュメント統合               | あなたの名前 | Mediator_Controller_Structure.md, Mediator_Controller_Structure.png, EntryPanel_UseCase_Mapped.png | Step1リファクタ準備、構造・役割・進行方針を確定 |
+| 114 | 2025/06/10 | EPT_CodingStandards_v1.0.md | v1.0 | 規約変更 | 関数命名規則を lowerCamelCase → UpperCamelCase に変更。今後は MQL業界の通例に準拠し、関数も PascalCase で統一する | 【設計整理】命名規則のCamelCase変更検討 |

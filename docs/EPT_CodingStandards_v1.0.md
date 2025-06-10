@@ -3,7 +3,7 @@
 命名規則は、コードの可読性と保守性を高めるため、すべての識別子に一貫性を持たせることを目的とします。
 
 * **クラス名**：`C`プレフィックス + UpperCamelCase（例：`CEntryExecutor`）
-* **関数名**：lowerCamelCase（例：`calculateLotSize`）
+* **関数名**：UpperCamelCase（例：`CalculateLotSize`）
 * **変数名**：lowerCamelCase（例：`riskPercent`）。関数スコープでは簡潔に。
 * **定数名**：すべて大文字＋アンダースコア区切り（例：`MAX_POSITION_COUNT`）
 * **マクロ名**：定数と同様に全大文字（例：`LOG_ACTION_DEBUG`）
