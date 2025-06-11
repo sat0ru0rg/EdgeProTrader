@@ -59,6 +59,35 @@ void SomeFunction()
 
 > ✅ `EPT_spec_MQL_Designs_v2.0.md` に準拠した責務分離を維持
 
+### 3.1 📛 テストファイルの命名規約と配置ルール
+
+- すべてのテスト用 `.mq4` ファイルは `Test_` 接頭辞を必須とする。
+- 命名形式は以下の通りとし、対象クラス・目的が一目でわかるようにする：
+
+Test_<対象名>[_<粒度 or 目的>].mq4
+
+- 粒度や目的の命名例：
+  - `UseCase`, `Advanced`, `Exhaustive`, `Integration`, `Scenario`
+
+- 具体例：
+  - `Test_CPanelState.mq4`
+  - `Test_EntryMediator_Integration.mq4`
+  - `Test_CEntryValidator_Exhaustive.mq4`
+
+> 🔖 テストの配置構成と役割分担は `README_Testing.md` を参照。
+
+### 3.2 📁 テスト実行形式の使い分け（Expert vs Script）
+
+テストファイルは、目的に応じて **以下2種類の実行形式** を使い分けます：
+
+| 実行形式     | 配置パス                       | 主な用途                      |
+|--------------|-------------------------------|-------------------------------|
+| **Expert形式** | `/Experts/Testing/`            | モック使用・大規模構成・連携試験向け |
+| **Script形式** | `/Scripts/Testing/`            | 簡易実行・デモ口座での即時動作検証など |
+
+> ✅ テストコードを新規作成する際は、用途に応じた方式を選定してください。  
+> 詳細は `README_Testing.md` / `README_ScriptsTesting.md` を参照。
+
 ---
 
 ## 第4章. コメントとドキュメンテーション（Documentation）
