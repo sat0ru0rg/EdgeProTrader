@@ -160,3 +160,4 @@
 | 112 | 2025-06-09 | FIX    | ユースケーステスト全8種における状態遷移を検証し、ログ整備・責務整理・初期化処理を確立 | gizmo様  | CPanelStateManager実装検証 | 全UC合格を確認済 |
 | 113 | 2025-06-10 | ADD    | Mediator構造設計・責務分離用ドキュメント統合               | あなたの名前 | Mediator_Controller_Structure.md, Mediator_Controller_Structure.png, EntryPanel_UseCase_Mapped.png | Step1リファクタ準備、構造・役割・進行方針を確定 |
 | 114 | 2025/06/10 | EPT_CodingStandards_v1.0.md | v1.0 | 規約変更 | 関数命名規則を lowerCamelCase → UpperCamelCase に変更。今後は MQL業界の通例に準拠し、関数も PascalCase で統一する | 【設計整理】命名規則のCamelCase変更検討 |
+| 115 | 2025/06/11 | EPT_CodingStandards_v1.0.md / EPT_guidelines_v2.0.md     | v1.0       | 仕様ルール追加 | テストファイル命名・配置ルールを第3章に新設。Test_ 接頭辞の命名規則とカテゴリ別配置指針を記述 | 【実装】Step1：EntryController構築とエントリー処理移管 |
