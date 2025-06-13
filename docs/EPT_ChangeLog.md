@@ -165,3 +165,5 @@
 | 117 | 2025/06/12 | EPT_guidelines_v2.0.md                                   | v2.0       | ガイド追記   | Scriptsテスト方式を第3章に新設し、運用ルールと推奨構成を明記           | 【Docs整備】Scripts形式テスト運用ルール追加             |
 | 118 | 2025/06/12 | MQL4/Experts/Testing/README_Testing.md                   | -          | ドキュメント更新 | Scripts形式のテスト構成・選定指針を追記。フォルダ設計と運用補足を明記 | 【Docs整備】README_Testing.md更新（Script対応）         |
 | 119 | 2025-06-12 | 構造整理 | フォルダ構成 | Include / Experts / Scripts のフォルダ構成を03〜12＋99構造で統一      | EntryValidator作成スレッド   | `EPT_CodingStandards_FolderStructure.md` に詳細記載 |
+| 120 | 2025-06-12 | 実装＋テスト | EntryValidator | CEntryValidator本番／Mock／単体テスト（Spread/Time判定）を実装・検証完了 | EntryValidator作成スレッド | Include/Validator & TestHelpers/Mock 配置済 |
+| 121 | 2025-06-13 | ドキュメント追加 | Git運用ルール | Git操作手順・ブランチ運用・PR手順を `EPT_GitFlow_Guide.md` に整理 | 【ガイド追記】Git運用ルール策定 | guidelines/operationalGuide にも参照リンク追加 |

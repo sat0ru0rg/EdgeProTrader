@@ -97,4 +97,5 @@
 | 90 | ✅完 | 🟡中 | 【テスト実装】CPanelStateManager 動作検証EA作成 | 2025/05/20 | 2025/05/22 | Entry/BE制御ロジックの単体検証用EA作成 | 出典：CPanelStateManagerテストスレッド |
 | 91 | ✅完 | 🟡中 | 【テスト対応】CPanelStateManagerのユニットテスト設計 | 2025/05/23 |  | 状態遷移やモック条件を切り替えた状態判定のテスト実装 | 出典：共通構成TestBootstrap導入と初期構成の作成 |
 | 92 | ✅完 | 🟡中 | 【ユースケース】CPanelStateManagerの正常遷移確認とクラス統合準備 | 2025/05/27 | （未定） | CPanelStateManagerの状態遷移をユースケースベースで検証し、次工程の4クラス統合へ備える | 出典：タスク登録スレッド（CPanelStateManager検証系） |
-| 93 | 🗒️未 | 🟡中 | CPanelStateManager_UseCaseTest_追加 | 2025/05/28 | （任意で期限入力） | UC02〜UC08の状態遷移検証テストの関数追加と検証 | 【ユースケース】CPanelStateManagerの正常遷移確認（UC02〜UC08） |
+| 93 | ✅完 | 🟡中 | CPanelStateManager_UseCaseTest_追加 | 2025/05/28 | （任意で期限入力） | UC02〜UC08の状態遷移検証テストの関数追加と検証 | 【ユースケース】CPanelStateManagerの正常遷移確認（UC02〜UC08） |
+| 94 | ✅完       | 🟡中   | EntryValidatorの本番／Mock実装と単体テスト | 2025/06/12 | （任意） | CEntryValidator本番版とMock版を実装し、各単体テスト完了 | Entry可否に関する事前判定ロジックの確認・切替検証 |
