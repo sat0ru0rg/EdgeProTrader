@@ -168,3 +168,4 @@
 | 120 | 2025-06-12 | 実装＋テスト | EntryValidator | CEntryValidator本番／Mock／単体テスト（Spread/Time判定）を実装・検証完了 | EntryValidator作成スレッド | Include/Validator & TestHelpers/Mock 配置済 |
 | 121 | 2025-06-13 | ドキュメント追加 | Git運用ルール | Git操作手順・ブランチ運用・PR手順を `EPT_GitFlow_Guide.md` に整理 | 【ガイド追記】Git運用ルール策定 | guidelines/operationalGuide にも参照リンク追加 |
 | 122 | 2025-06-13 | EntryValidator統合 | Validatorモジュール | EntryValidator＋Mock＋テストの統合完了（PR #1） | 【実装対応】EntryValidator作成スレッド | GitHub PR: #1 merged into main |
+| 123 | EntryController構成テンプレートと命名規則の正式追記 | `EPT_Class_v2.0.md` 第3章に `3.7` 節を新設／`EPT_guidelines_v2.0.md` に `3.8 クラス命名規則` を新設 | 2025-06-14 | GPT生成（Canvas反映済） |

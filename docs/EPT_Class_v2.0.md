@@ -131,23 +131,114 @@ TP/SLライン、損益ラベルなどをチャートに描画・更新する
 
 ### 3.6 CBEPriceCalculator
 
-#### 役割
+#### 3.6.1 役割
 ±0円となる建値ライン価格 (Break Even 価格) を計算するロジック専用クラス
 
-#### 主な関数
+#### 3.6.2 主な関数
 - `double CalculateTrueBEPrice(int ticket)`
 - `double CalculateTrueBEPriceWithSlippage(int ticket, double slippagePips)`
 
-#### 処理内容
+#### 3.6.3 処理内容
 - `OrderCommission()` や `OrderSwap()` を取得し、コストを円換算
 - pipValue補正 (tick → pip) を行い、pips → price に変換
 - BUY / SELL に応じて正しい方向に BE 価格を返す
 
-#### 特徴
+#### 3.6.4 特徴
 - BEライン描画や SL 自動移動など、±0円損益基準を要する機能の中核
 - OrderModify や 描画等の実行は他クラスに委譲
 - ログ出力を強化し、デバッグ分析やテストログにも有用
 
+### 3.7 EntryController以下のクラス構成設計テンプレート
+
+本テンプレートは、EdgeProTraderにおける `EntryController` 配下のロジック・表示系の責務分離設計を明文化したものである。各クラスの役割と関係性を明示し、将来的な拡張と保守性を担保する。
+
+---
+
+### 🧠 Logic構成：CEntryController配下
+
+#### CEntryController
+
+* **責務**：エントリー処理全体の統括、各構成要素への指令出し
+* **依存クラス**：
+
+  * `CEntryValidator`
+  * `CEntryExecutor`
+  * `CEntryRiskCalculator`
+  * `CEntryStateManager`
+
+#### CEntryValidator
+
+* **責務**：エントリー条件を満たしているか判定（価格・状態・ロジック）
+
+#### CEntryExecutor
+
+* **責務**：ロット・価格を用いて注文を構築し、OrderServiceに委譲
+* **依存クラス**：
+
+  * `CEntryOrderService`
+
+#### CEntryOrderService
+
+* **責務**：MQLの `OrderSend` 系APIを用いた実注文処理
+
+#### CEntryRiskCalculator
+
+* **責務**：指定SL距離とリスク％から許容ロットサイズを算出
+
+#### CEntryStateManager
+
+* **責務**：現在の状態保持・状態遷移管理
+* **内部構成**：
+
+  * `CEntryState`：列挙的状態モデル（例：Idle / Holding / Executed）
+  * `CEntryPermissionRules`：状態に基づく操作許可の判定（旧：Judge）
+
+---
+
+### 🎨 View構成：CEntryVisualizerCoordinator配下
+
+#### CEntryVisualizerCoordinator
+
+* **責務**：描画系操作の窓口。UI/Mediatorとの接点
+* **依存クラス**：
+
+  * `CEntryVisualizerCommandManager`
+  * `CEntryVisualizerController`
+
+#### CEntryVisualizerCommandManager
+
+* **責務**：現在の操作モード管理とコマンド実行の切替指令
+* **内部構成**：
+
+  * `CEntryVisualizerCommandState`：表示対象の操作モード状態
+  * `CEntryVisualizerCommandRules`：操作可否や制限の判定
+
+#### CEntryVisualizerController
+
+* **責務**：Visualizer群をまとめて操作・更新・表示切替
+* **管理対象**：
+
+  * `CPipsLabelVisualizer`
+  * `CSLLineVisualizer`
+  * `CTPLineVisualizer`
+  * `CBELineVisualizer`
+
+---
+
+### 🔁 呼び出し順モデル（典型例：BUYエントリー時）
+
+```plaintext
+EntryPanelMediator
+  → EntryMediator
+    → CEntryController
+        → CEntryValidator（可否判定）
+        → CEntryStateManager（状態確認）
+        → CEntryRiskCalculator（ロット補正）
+        → CEntryExecutor → CEntryOrderService
+    → CEntryVisualizerCoordinator
+        → CEntryVisualizerCommandManager
+        → CEntryVisualizerController → 各Visualizer
+```
 ---
 
 ## 第4章. Tradeモジュール設計（再構成）

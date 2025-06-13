@@ -182,6 +182,36 @@ LOG_TEST_DEBUG("...");
 
 今後の全コーディングでは `LOG_***_C()` の使用を原則とし、**既存コードも修正の機会に合わせて置換**していくことを推奨します。
 
+
+#### 3.8 命名規則ガイド（正式版）
+
+##### 📘▶ プレフィックスルール
+
+| クラス種別        | プレフィックス         | 命名例                                     |
+| ------------ | --------------- | --------------------------------------- |
+| 業務ロジッククラス    | `C`付き           | `CEntryController`, `CEntryExecutor`    |
+| View描画クラス    | `C`付き           | `CPipsLabelVisualizer`                  |
+| インタフェース      | `I`付き           | `IEntryExecutor`                        |
+| UI/Mediator系 | 無し              | `EntryMediator`, `EntryPanelController` |
+| テスト／モック      | `Test_`／`Mock_` | `Test_CEntryValidator`                  |
+
+##### 📗▶ サフィックス（責務識別）
+
+* `Controller`, `Executor`, `Manager`, `Service`, `Visualizer`, `Rules`, `State`, `Calculator` などを**必ず末尾に明示**して責務を示す。
+
+##### 📙▶ ファイル名との対応
+
+* クラス名とファイル名は完全一致とする（例：`CEntryController.mqh`）
+* 命名は PascalCase を採用し、構造と責務が一目で分かるようにする。
+
+---
+
+このテンプレートは `EPT_Class_v2.0.md` に統合可能な構造を想定しており、命名規則・責務分離の原則を準拠している。
+
+
+
+
+
 ---
 
 ## 第4章. 補足・備考
