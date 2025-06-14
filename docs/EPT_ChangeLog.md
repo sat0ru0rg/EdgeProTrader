@@ -169,3 +169,4 @@
 | 121 | 2025-06-13 | ドキュメント追加 | Git運用ルール | Git操作手順・ブランチ運用・PR手順を `EPT_GitFlow_Guide.md` に整理 | 【ガイド追記】Git運用ルール策定 | guidelines/operationalGuide にも参照リンク追加 |
 | 122 | 2025-06-13 | EntryValidator統合 | Validatorモジュール | EntryValidator＋Mock＋テストの統合完了（PR #1） | 【実装対応】EntryValidator作成スレッド | GitHub PR: #1 merged into main |
 | 123 | EntryController構成テンプレートと命名規則の正式追記 | `EPT_Class_v2.0.md` 第3章に `3.7` 節を新設／`EPT_guidelines_v2.0.md` に `3.8 クラス命名規則` を新設 | 2025-06-14 | GPT生成（Canvas反映済） |
+| 124 | 2025/06/14 | EPT_Class_v2.0.md | v2.0 | 構造変更 | EntryPanelMediator〜描画層までの責務分離構成を整理。EntryVisualizerMediatorの新設、Coordinator配下の呼び出し構成と依存マトリクス更新 | 【CEntryExecutor 実装対応】 |

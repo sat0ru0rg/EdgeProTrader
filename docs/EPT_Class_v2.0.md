@@ -31,7 +31,7 @@
 
 #### 依存クラス
 - `CPanelStateManager`（状態判定）
-- `CEntryExecutor`, `CBEExecutor`（発注処理）
+- `EntryMediator`, `EntryVisualizerMediator`（発注／描画処理）
 
 ---
 
@@ -47,6 +47,26 @@ TP/SLライン、損益ラベルなどをチャートに描画・更新する
 
 #### 備考
 - 最大5件の取引履歴の視覚表示に対応
+
+---
+
+### 2.3 EntryVisualizerMediator
+
+#### 役割
+描画制御系の中継クラス。UI層（EntryPanelMediator）と描画制御層（Coordinator）を仲介し、表示切替・操作モード管理・描画再描画を統一的に管理する。
+
+#### 主な関数
+- `void ShowTPLine()`
+- `void UpdatePipsLabel()`
+- `void ToggleSLMode()`
+
+#### 依存クラス
+- `CEntryVisualizerCoordinator`
+- `CEntryVisualizerController`
+- `CEntryVisualizerCommandManager`
+
+#### 備考
+- Coordinatorへの責務集中を避け、描画コマンド系ロジックの整理・テスト容易性向上を目的としたMediator層。
 
 ---
 
@@ -235,9 +255,10 @@ EntryPanelMediator
         → CEntryStateManager（状態確認）
         → CEntryRiskCalculator（ロット補正）
         → CEntryExecutor → CEntryOrderService
-    → CEntryVisualizerCoordinator
-        → CEntryVisualizerCommandManager
-        → CEntryVisualizerController → 各Visualizer
+    → EntryVisualizerMediator
+        → CEntryVisualizerCoordinator
+            → CEntryVisualizerCommandManager
+            → CEntryVisualizerController → 各Visualizer
 ```
 ---
 
@@ -349,6 +370,10 @@ Include/
 ## 第6章. クラス間依存マトリクスと連携図
 
 ```
+EntryPanel ─▶ EntryPanelMediator
+                 ├──▶ EntryMediator ─▶ CEntryController
+                 └──▶ EntryVisualizerMediator ─▶ CEntryVisualizerCoordinator
+
 CEntryPanel ─────▶ CPanelStateManager
              ├──▶ CEntryExecutor
              └──▶ CBEExecutor
@@ -372,6 +397,8 @@ CPanelStateManager ─▶ CPositionModel
 
 * 各クラスは「1クラス1責務」原則を遵守し、状態やUIへの依存を最小限にする
 * View層はMQL4/5の違いを吸収できるよう、今後Baseクラス導入を検討する
+* Visualizer層は、責務集中を避けるため `EntryVisualizerMediator` を介して接続される構成とする。
+* これにより、描画系の操作モード切替・ラベル更新・ライン表示制御の統一的な呼び出しが可能となり、将来的なマルチUI／戦略拡張にも対応しやすくなる。
 
 ### 7.2 参照ドキュメント一覧
 
