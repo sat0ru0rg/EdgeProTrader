@@ -63,14 +63,17 @@ Include/*
 # ✅ Experts設定：Testing配下の .mq4 のみ追跡
 MQL4/Experts/*
 !MQL4/Experts/Testing/
-!MQL4/Experts/Testing/**/*.mq4
+!MQL4/Experts/Testing/*.md
 !MQL4/Experts/Testing/**/*.md
+!MQL4/Experts/Testing/**/*.mq4
 
 # ✅ Scripts設定：Testing配下の .mq4 のみ追跡
 MQL4/Scripts/*
 !MQL4/Scripts/Testing/
-!MQL4/Scripts/Testing/**/*.mq4
+!MQL4/Scripts/Testing/*.md
 !MQL4/Scripts/Testing/**/*.md
+!MQL4/Scripts/Testing/**/*.mq4
+
 
 # ただし .ex4 は全体で除外（拡張子ベースで厳格に除外）
 MQL4/Experts/**/*.ex4
