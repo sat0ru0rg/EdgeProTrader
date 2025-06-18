@@ -78,15 +78,19 @@ Include/*
 !Include/EdgeProLib/
 !Include/EdgeProLib/**
 
-# Experts除外 → Testing配下の再帰的ファイルは許可
-Experts/*
-!Experts/Testing/
-!Experts/Testing/**
+# ────────────────
+# Experts設定：まずTestingを許可、あとで除外
+# ────────────────
+!MQL4/Experts/Testing/
+!MQL4/Experts/Testing/**
+MQL4/Experts/
 
-# Scripts除外 → Testing配下の再帰的ファイルは許可
-Scripts/*
-!Scripts/Testing/
-!Scripts/Testing/**
+# ────────────────
+# Scripts設定：まずTestingを許可、あとで除外
+# ────────────────
+!MQL4/Scripts/Testing/
+!MQL4/Scripts/Testing/**
+MQL4/Scripts/
 
 # ただし .ex4 は全体で除外
 Experts/**/*.ex4
