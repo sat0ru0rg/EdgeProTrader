@@ -3,6 +3,7 @@
 命名規則は、コードの可読性と保守性を高めるため、すべての識別子に一貫性を持たせることを目的とします。
 
 * **クラス名**：`C`プレフィックス + UpperCamelCase（例：`CEntryExecutor`）
+* **インタフェース名**：`I`プレフィックス + UpperCamelCase（例：`IEntryOrderService`）
 * **関数名**：UpperCamelCase（例：`CalculateLotSize`）
 * **変数名**：lowerCamelCase（例：`riskPercent`）。関数スコープでは簡潔に。
 * **定数名**：すべて大文字＋アンダースコア区切り（例：`MAX_POSITION_COUNT`）
@@ -10,6 +11,55 @@
 * **ファイル名**：定義するクラスと一致させる（例：クラス`CEntryExecutor` → `CEntryExecutor.mqh`）
 
 > 🔖 本規則は `EPT_operationalGuide_v2.0.md` 第3章と整合します。
+
+## 第1章. 命名規則（Naming Conventions）
+
+（…前略）
+
+---
+
+### 1.1 Interface 命名規則（I◯◯）
+
+インタフェース（抽象クラス）は、用途に応じて以下2系統に分類し、命名テンプレートに従う。
+
+#### ✅ A. モック切替用途の軽量インタフェース
+- **目的**：本番用実装とテスト用モックを差し替えるためのインタフェース
+- **命名**：`I◯◯Service` / `I◯◯Calculator` のように、実装クラスと語幹を一致させる
+- **実装クラス**：`C◯◯Service`、`CMock◯◯Service` のように命名し、明確にペア化する
+
+| Interface名           | 実装クラス名                | モッククラス名                  |
+|------------------------|-----------------------------|----------------------------------|
+| `IEntryOrderService`   | `CEntryOrderService`        | `CMockEntryOrderService`        |
+| `IBEPriceCalculator`   | `CBEPriceCalculator`        | `CMockBEPriceCalculator`        |
+
+> ☑️ 実クラス・モッククラスが必ず「ペア」として構造的に明示されるよう命名すること。
+
+---
+
+#### ✅ B. 多態性（ポリモーフィズム）用途の抽象インタフェース
+- **目的**：複数の実装クラスを共通のAPIとして抽象化し、Controller等から動的に切り替え可能とする
+- **命名**：役割名や処理名に基づき、以下のような構造を持たせる
+
+| 命名パターン        | 主な用途                     | 例                                 |
+|---------------------|------------------------------|------------------------------------|
+| `I◯◯Strategy`       | 複数の戦略を抽象化           | `IEntryStrategy` / `CBreakoutStrategy` など |
+| `I◯◯Checker`        | 条件・判定系の抽象化         | `IEntryConditionChecker` / `CSpreadChecker` |
+| `I◯◯Visualizer`     | 描画系の共通インタフェース   | `IVisualizer`, `IRenderable`       |
+| `I◯◯Service`        | 共通の注文／実行系抽象化     | `IOrderService` / `CExitOrderService` など |
+
+> ☑️ 命名上で「何を提供するか（機能・動作）」が即座に想起できるよう設計すること
+
+---
+
+#### 🧾 コメント構文テンプレート（すべてのIF冒頭に明記）
+
+```mql4
+//+------------------------------------------------------------------+
+//| IEntryOrderService                                               |
+//| Interface Type : [Mock切替専用]                                  |
+//| Implemented by : CEntryOrderService / CMockEntryOrderService     |
+//| Used by        : CEntryExecutor                                  |
+//+------------------------------------------------------------------+
 
 ---
 
