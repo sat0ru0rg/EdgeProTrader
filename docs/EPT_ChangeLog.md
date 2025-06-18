@@ -170,3 +170,4 @@
 | 122 | 2025-06-13 | EntryValidator統合 | Validatorモジュール | EntryValidator＋Mock＋テストの統合完了（PR #1） | 【実装対応】EntryValidator作成スレッド | GitHub PR: #1 merged into main |
 | 123 | EntryController構成テンプレートと命名規則の正式追記 | `EPT_Class_v2.0.md` 第3章に `3.7` 節を新設／`EPT_guidelines_v2.0.md` に `3.8 クラス命名規則` を新設 | 2025-06-14 | GPT生成（Canvas反映済） |
 | 124 | 2025/06/14 | EPT_Class_v2.0.md | v2.0 | 構造変更 | EntryPanelMediator〜描画層までの責務分離構成を整理。EntryVisualizerMediatorの新設、Coordinator配下の呼び出し構成と依存マトリクス更新 | 【CEntryExecutor 実装対応】 |
+| 125 | 2025/06/17 | 修正     | EPT_interfaceMap.md    | IEntryOrderService / IBEPriceCalculator を追加、旧IFを削除・リネーム     | （あなたの名前） | 命名規則見直し・重複整理による構造修正 |
