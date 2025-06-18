@@ -78,19 +78,19 @@ Include/*
 !Include/EdgeProLib/
 !Include/EdgeProLib/**
 
-# Experts 全除外 → Testingのみ許可（*.mq4のみ）
+# Experts除外 → Testing配下の再帰的ファイルは許可
 Experts/*
 !Experts/Testing/
-!Experts/Testing/*.mq4
+!Experts/Testing/**
 
-# ────────────────
-# 🧪 Scripts形式のテストコード管理
-# ────────────────
-# Scripts 全除外 → Testing配下の .mq4 のみ許可
+# Scripts除外 → Testing配下の再帰的ファイルは許可
 Scripts/*
 !Scripts/Testing/
-!Scripts/Testing/**/*.mq4
+!Scripts/Testing/**
 
+# ただし .ex4 は全体で除外
+Experts/**/*.ex4
+Scripts/**/*.ex4
 
 # ────────────────
 # 📄 ドキュメント除外（テンプレ・バイナリ）
