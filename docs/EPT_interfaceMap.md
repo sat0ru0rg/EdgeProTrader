@@ -1,11 +1,10 @@
-
 # EPT_interfaceMap.md
 
 ---
 
 ## 第1章. 概要
 
-本ドキュメントは、EdgeProTraderプロジェクトにおける戦略Executor構造の基盤として設計された
+本ドキュメントは、EdgeProTraderプロジェクトにおける戦略Executor構造の基盤として設計された  
 中間インターフェース（I/F）および共通ベースクラス `COrderExecutorBase` の定義集である。
 
 本資料は主に以下の目的で使用される：
@@ -25,12 +24,15 @@
 
 | I/F名                        | 主な責務                                      | 戦略分類           |
 |------------------------------|-----------------------------------------------|--------------------|
-| `IMarketOrderExecutor`       | 成行注文（Send）および部分決済（ClosePartial）       | Entry / Exit共通  |
-| `ISLModifier`                | SLの変更およびトレーリング処理                     | Exit / 補助        |
-| `IExitEvaluator`            | 即時決済の条件判定（ShouldExitNow）               | Exit              |
-| `IEntryConditionEvaluator`  | エントリー条件の成立判定（ShouldEnterNow）         | Entry             |
-| `IPendingOrderPlacer`       | 指値・逆指値の発注（PlaceLimitOrder）             | Entry（予約系）     |
-| `IPendingOrderCanceller`    | 予約注文の自動キャンセル                         | 補助               |
+| `IEntryOrderService`         | 成行発注／決済実行処理の抽象化（SendOrder, ClosePartial） | Entry（モック切替）|
+| `IBEPriceCalculator`         | 建値（BreakEven）計算処理の抽象化              | 補助（BE）        |
+| `IEntryValidator`            | エントリー条件の成立判定（ShouldEnterNow）      | Entry（可否判定） |
+| `ISLModifier`                | SLの変更およびトレーリング処理                | Exit / 補助       |
+| `IExitEvaluator`             | 即時決済の条件判定（ShouldExitNow）           | Exit              |
+| `IPendingOrderPlacer`        | 指値・逆指値の発注（PlaceLimitOrder）         | Entry（予約系）   |
+| `IPendingOrderCanceller`     | 予約注文の自動キャンセル                     | 補助              |
+
+> ☑️ `IMarketOrderExecutor` は `IEntryOrderService` に統合されたため、削除済み。
 
 ---
 
