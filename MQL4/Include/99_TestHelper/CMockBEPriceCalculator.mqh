@@ -1,49 +1,71 @@
 //+------------------------------------------------------------------+
 //| CMockBEPriceCalculator                                           |
 //| Implements : IBEPriceCalculator                                  |
-//| Purpose    : BE価格計算をダミー実装（+1.0pips固定）                  |
+//| Purpose    : モック用建値計算クラス（BUY/SELL方向対応）            |
 //+------------------------------------------------------------------+
 #ifndef __CMOCK_BEPRICE_CALCULATOR_MQH__
 #define __CMOCK_BEPRICE_CALCULATOR_MQH__
 
 #include <03_Interface/IBEPriceCalculator.mqh>
-#include <01_Config/EPT_EnvConfig.mqh>  // ASSERT & LOGマクロ
+#include <01_Config/EPT_EnvConfig.mqh>
 
 #define __CLASS__ "CMockBEPriceCalculator"
 
 class CMockBEPriceCalculator : public IBEPriceCalculator
 {
 private:
-   double m_offsetPips;
+   int m_type;          // OP_BUY or OP_SELL
+   double m_entry;      // モック用のエントリー価格
 
 public:
-   CMockBEPriceCalculator()
+   // 明示的にポジションを設定
+   void SetMockOrder(int type, double entryPrice)
    {
-      m_offsetPips = 1.0;
+      m_type  = type;
+      m_entry = entryPrice;
+
+      LOG_ACTION_INFO_C("SetMockOrder: type=" + OrderTypeToString(type) +
+                        ", entry=" + DoubleToString(entryPrice, Digits));
    }
 
-   // --- モック定義：常に entry + offset を返す
    double CalculateTrueBEPrice(int ticket)
    {
-      double entry = 1.2345; // ダミー
-      double result = entry + m_offsetPips * Point;
+      double result = (m_type == OP_BUY)
+                      ? m_entry + 1 * Point
+                      : m_entry - 1 * Point;
 
-      LOG_ACTION_INFO_C("CalculateTrueBEPrice called: ticket=" + IntegerToString(ticket) +
-                        ", entry=" + DoubleToString(entry, Digits) +
+      LOG_ACTION_INFO_C("CalculateTrueBEPrice: ticket=" + IntegerToString(ticket) +
+                        ", type=" + OrderTypeToString(m_type) +
+                        ", entry=" + DoubleToString(m_entry, Digits) +
                         ", result=" + DoubleToString(result, Digits));
       return result;
    }
 
-   double CalculateTrueBEPriceWithSlippage(int ticket, double slippage)
+   double CalculateTrueBEPriceWithSlippage(int ticket, double slippagePips)
    {
-      double entry = 1.2345; // ダミー
-      double result = entry + (m_offsetPips + slippage) * Point;
+      double base = CalculateTrueBEPrice(ticket);
+      double offset = slippagePips * Point;
 
-      LOG_ACTION_INFO_C("CalculateTrueBEPriceWithSlippage called: ticket=" + IntegerToString(ticket) +
-                        ", entry=" + DoubleToString(entry, Digits) +
-                        ", slippage=" + DoubleToString(slippage, 1) +
+      double result = (m_type == OP_BUY)
+                      ? base + offset
+                      : base - offset;
+
+      LOG_ACTION_INFO_C("CalculateTrueBEPriceWithSlippage: ticket=" + IntegerToString(ticket) +
+                        ", slippage=" + DoubleToString(slippagePips, 1) +
+                        ", offset=" + DoubleToString(offset, Digits) +
                         ", result=" + DoubleToString(result, Digits));
       return result;
+   }
+
+private:
+   string OrderTypeToString(int type)
+   {
+      switch (type)
+      {
+         case OP_BUY:  return "BUY";
+         case OP_SELL: return "SELL";
+         default:      return "UNKNOWN";
+      }
    }
 };
 
