@@ -8,6 +8,7 @@
 #ifndef __CMOCK_ENTRY_ORDER_SERVICE_MQH__
 #define __CMOCK_ENTRY_ORDER_SERVICE_MQH__
 
+#include <01_Config/EPT_EnvConfig.mqh>  // ASSERTマクロ定義元をインクルード
 #include <03_Interface/IEntryOrderService.mqh>
 
 #define __CLASS__ "CMockEntryOrderService"
