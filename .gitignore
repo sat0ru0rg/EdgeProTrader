@@ -18,7 +18,7 @@
 Logs/
 Presets/
 Files/
-Scripts/
+# Scripts/
 Projects/
 Shared Projects/
 MQL4/Logs/
@@ -63,14 +63,14 @@ Include/*
 # ✅ Experts設定：Testing配下の .mq4 のみ追跡
 MQL4/Experts/*
 !MQL4/Experts/Testing/
-!MQL4/Experts/Testing/*.md
+# !MQL4/Experts/Testing/*.md
 !MQL4/Experts/Testing/**/*.md
 !MQL4/Experts/Testing/**/*.mq4
 
 # ✅ Scripts設定：Testing配下の .mq4 のみ追跡
 MQL4/Scripts/*
 !MQL4/Scripts/Testing/
-!MQL4/Scripts/Testing/*.md
+#!MQL4/Scripts/Testing/*.md
 !MQL4/Scripts/Testing/**/*.md
 !MQL4/Scripts/Testing/**/*.mq4
 
