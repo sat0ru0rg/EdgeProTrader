@@ -8,7 +8,7 @@
 #define __CMOCK_ENTRY_VALIDATOR_MQH__
 
 #include <03_Interface/IEntryValidator.mqh>
-#include <01_Config/EPT_Config.mqh>  // ASSERTマクロ
+#include <01_Config/EPT_EnvConfig.mqh>  // ASSERTマクロ
 
 #define __CLASS__ "CMockEntryValidator"
 
